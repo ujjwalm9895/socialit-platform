@@ -8,7 +8,7 @@ This module handles all application configuration with:
 - Security best practices
 """
 
-from typing import List, Optional
+from typing import Annotated, List, Optional, Union
 from functools import lru_cache
 
 from pydantic import Field, PostgresDsn, field_validator
@@ -100,9 +100,9 @@ class Settings(BaseSettings):
     # CORS Settings
     # ============================================================================
     
-    CORS_ORIGINS: List[str] = Field(
-        default=["http://localhost:3000", "http://localhost:8000"],
-        description="Allowed CORS origins"
+    CORS_ORIGINS: Union[str, List[str]] = Field(
+        default="http://localhost:3000,http://localhost:8000",
+        description="Allowed CORS origins (comma-separated string or JSON array)"
     )
     
     CORS_CREDENTIALS: bool = Field(
@@ -110,14 +110,14 @@ class Settings(BaseSettings):
         description="Allow credentials in CORS requests"
     )
     
-    CORS_METHODS: List[str] = Field(
-        default=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        description="Allowed HTTP methods for CORS"
+    CORS_METHODS: Union[str, List[str]] = Field(
+        default="GET,POST,PUT,PATCH,DELETE,OPTIONS",
+        description="Allowed HTTP methods for CORS (comma-separated string or JSON array)"
     )
     
-    CORS_HEADERS: List[str] = Field(
-        default=["*"],
-        description="Allowed headers for CORS"
+    CORS_HEADERS: Union[str, List[str]] = Field(
+        default="*",
+        description="Allowed headers for CORS (comma-separated string or JSON array)"
     )
     
     # ============================================================================
@@ -166,13 +166,39 @@ class Settings(BaseSettings):
             raise ValueError(f"ENVIRONMENT must be one of {allowed}")
         return v.lower()
     
-    @field_validator("CORS_ORIGINS", mode="before")
+    @field_validator("CORS_ORIGINS", "CORS_METHODS", "CORS_HEADERS", mode="before")
     @classmethod
-    def parse_cors_origins(cls, v):
-        """Parse CORS origins from string or list."""
+    def parse_list_field(cls, v) -> List[str]:
+        """
+        Parse list fields from string or list.
+        
+        Handles:
+        - Comma-separated strings: "value1,value2,value3"
+        - JSON arrays: '["value1","value2","value3"]'
+        - Already parsed lists
+        """
+        if v is None:
+            return []
+        if isinstance(v, list):
+            return [str(item).strip() for item in v if item]
         if isinstance(v, str):
-            return [origin.strip() for origin in v.split(",") if origin.strip()]
-        return v
+            # Handle empty string
+            if not v.strip():
+                return []
+            # Try to parse as JSON first (for JSON arrays in env)
+            try:
+                import json
+                # Remove any surrounding quotes
+                v_clean = v.strip().strip('"').strip("'")
+                parsed = json.loads(v_clean)
+                if isinstance(parsed, list):
+                    return [str(item).strip() for item in parsed if item]
+            except (json.JSONDecodeError, ValueError, TypeError):
+                # Not JSON, treat as comma-separated string
+                pass
+            # Fall back to comma-separated string
+            return [item.strip() for item in v.split(",") if item.strip()]
+        return []
     
     @field_validator("LOG_LEVEL")
     @classmethod

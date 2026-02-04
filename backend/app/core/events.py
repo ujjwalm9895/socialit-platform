@@ -13,6 +13,7 @@ import sys
 from fastapi import FastAPI
 
 from app.core.config import settings
+from app.db.init_db import init_db
 from app.db.session import check_db_connection, engine, get_db_stats
 
 logger = logging.getLogger(__name__)
@@ -32,16 +33,32 @@ def startup_db_check() -> None:
     logger.info("Checking database connectivity...")
     
     try:
-        if not check_db_connection():
-            error_msg = "Database connection check failed"
-            logger.error(error_msg)
-            raise RuntimeError(error_msg)
+        success, error_message = check_db_connection()
+        if not success:
+            error_msg = error_message or "Database connection check failed"
+            logger.error(f"Database connection failed: {error_msg}")
+            logger.error(
+                f"Database URL: {settings.DATABASE_URL.host}:{settings.DATABASE_URL.port if settings.DATABASE_URL.port else 'default'}"
+            )
+            logger.error(
+                "Please ensure:\n"
+                "  1. PostgreSQL server is running\n"
+                "  2. Database exists and is accessible\n"
+                "  3. Connection credentials in .env are correct\n"
+                "  4. Network/firewall allows connection"
+            )
+            raise RuntimeError(f"Database connection failed: {error_msg}")
         
-        # Get connection pool stats
-        pool_stats = get_db_stats()
-        logger.info(
-            f"Database connection successful. Pool stats: {pool_stats}"
-        )
+        # Get connection pool stats (optional, don't fail if unavailable)
+        try:
+            pool_stats = get_db_stats()
+            logger.info(
+                f"Database connection successful. Pool stats: {pool_stats}"
+            )
+        except Exception as stats_error:
+            # Log but don't fail startup if pool stats can't be retrieved
+            logger.warning(f"Could not retrieve pool stats: {stats_error}")
+            logger.info("Database connection successful")
         
         # Verify we can execute a simple query
         from sqlalchemy import text
@@ -50,6 +67,9 @@ def startup_db_check() -> None:
             version = result.scalar()
             logger.info(f"PostgreSQL version: {version}")
             
+    except RuntimeError:
+        # Re-raise RuntimeError as-is (already has good error message)
+        raise
     except Exception as e:
         error_msg = f"Failed to connect to database: {str(e)}"
         logger.critical(error_msg, exc_info=True)
@@ -82,8 +102,17 @@ def register_startup_events(app: FastAPI) -> None:
             # Log startup information
             startup_log_info()
             
+            # Import models registry to ensure all models are loaded
+            import app.models.registry  # noqa: F401
+            
             # Check database connectivity (fail fast if unavailable)
             startup_db_check()
+            
+            # Initialize database tables in development mode
+            if settings.is_development:
+                logger.info("Development mode: Initializing database tables...")
+                init_db()
+                logger.info("Database tables initialized")
             
             logger.info("Application startup completed successfully")
             

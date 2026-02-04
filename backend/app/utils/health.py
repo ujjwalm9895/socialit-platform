@@ -14,7 +14,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
 from app.core.config import settings
-from app.db.session import check_db_connection
+from app.db.session import check_db_connection as _check_db_connection
 
 router = APIRouter(
     prefix="/health",
@@ -106,7 +106,7 @@ async def detailed_health_check() -> DetailedHealthResponse:
         DetailedHealthResponse with application and service status
     """
     # Check database connectivity
-    db_healthy = check_db_connection()
+    db_healthy, _ = _check_db_connection()
     
     # Determine overall status
     overall_status = "healthy" if db_healthy else "unhealthy"

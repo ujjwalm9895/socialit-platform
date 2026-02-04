@@ -25,21 +25,19 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 # Model Imports
 # ============================================================================
-# Import all models here so SQLAlchemy can discover them
-# This ensures all table definitions are registered with Base.metadata
+# Import all models from app.models registry to ensure Base.metadata is complete
+# This ensures all table definitions are available for database operations
+# All models are automatically registered when this module is imported
 
-# TODO: Import models once they are created
-# Example:
-# from app.models.user import User
-# from app.models.role import Role
-# from app.models.permission import Permission
-# from app.models.service import Service
-# from app.models.blog import Blog
-# from app.models.page import Page
-# from app.models.case_study import CaseStudy
+import app.models.registry  # noqa: F401
 
-# For now, this is a placeholder - no models exist yet
-# When models are created, uncomment and add the imports above
+# Log registered tables for debugging
+def _log_registered_tables() -> None:
+    """Log all registered tables for debugging."""
+    if settings.DEBUG:
+        table_names = sorted(Base.metadata.tables.keys())
+        logger.debug(f"Registered tables: {', '.join(table_names)}")
+        logger.debug(f"Total tables: {len(table_names)}")
 
 
 # ============================================================================
@@ -83,12 +81,30 @@ def init_db(force: bool = False) -> None:
     
     logger.info("Initializing database tables...")
     
+    # Log registered tables in debug mode
+    _log_registered_tables()
+    
     try:
+        # Check existing tables to ensure compatibility
+        inspector = inspect(engine)
+        existing_tables = set(inspector.get_table_names())
+        registered_tables = set(Base.metadata.tables.keys())
+        
+        if existing_tables:
+            logger.info(f"Found {len(existing_tables)} existing tables in database")
+            # Check for schema compatibility
+            missing_tables = registered_tables - existing_tables
+            if missing_tables:
+                logger.info(f"Creating {len(missing_tables)} new tables: {', '.join(sorted(missing_tables))}")
+            else:
+                logger.info("All registered tables already exist in database")
+        
         # Create all tables defined in models
+        # This is safe - SQLAlchemy will skip existing tables
         Base.metadata.create_all(bind=engine)
-        logger.info("Database tables created successfully")
+        logger.info("Database tables initialized successfully")
     except Exception as e:
-        logger.error(f"Failed to create database tables: {e}")
+        logger.error(f"Failed to create database tables: {e}", exc_info=True)
         raise
 
 

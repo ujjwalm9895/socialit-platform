@@ -8,7 +8,7 @@ Provides:
 - Production-safe defaults
 """
 
-from typing import Generator
+from typing import Generator, Optional, Tuple
 
 from sqlalchemy import create_engine, event, pool
 from sqlalchemy.engine import Engine
@@ -137,20 +137,28 @@ def drop_db() -> None:
 # Health Check Utilities
 # ============================================================================
 
-def check_db_connection() -> bool:
+def check_db_connection() -> Tuple[bool, Optional[str]]:
     """
     Check if database connection is healthy.
     
     Returns:
-        True if connection is successful, False otherwise
+        Tuple of (success: bool, error_message: str | None)
     """
     try:
         from sqlalchemy import text
         with engine.connect() as connection:
             connection.execute(text("SELECT 1"))
-        return True
-    except Exception:
-        return False
+        return True, None
+    except Exception as e:
+        error_msg = str(e)
+        # Provide more helpful error messages for common issues
+        if "could not connect" in error_msg.lower() or "connection refused" in error_msg.lower():
+            error_msg = f"Database server is not running or unreachable: {error_msg}"
+        elif "authentication failed" in error_msg.lower():
+            error_msg = f"Database authentication failed. Check username/password: {error_msg}"
+        elif "does not exist" in error_msg.lower():
+            error_msg = f"Database does not exist. Create it first: {error_msg}"
+        return False, error_msg
 
 
 def get_db_stats() -> dict:
@@ -161,10 +169,13 @@ def get_db_stats() -> dict:
         Dictionary with pool statistics
     """
     pool_instance = engine.pool
-    return {
-        "pool_size": pool_instance.size(),
-        "checked_in": pool_instance.checkedin(),
-        "checked_out": pool_instance.checkedout(),
-        "overflow": pool_instance.overflow(),
-        "invalid": pool_instance.invalid(),
+    stats = {
+        "pool_size": getattr(pool_instance, "size", lambda: 0)(),
+        "checked_in": getattr(pool_instance, "checkedin", lambda: 0)(),
+        "checked_out": getattr(pool_instance, "checkedout", lambda: 0)(),
+        "overflow": getattr(pool_instance, "overflow", lambda: 0)(),
     }
+    # Only include invalid if the method exists (not available on all pool types)
+    if hasattr(pool_instance, "invalid"):
+        stats["invalid"] = pool_instance.invalid()
+    return stats

@@ -37,7 +37,6 @@ def setup_logging() -> None:
     if settings.LOG_FORMAT.lower() == "json":
         # JSON format for production (structured logging)
         import json
-        import logging.config
         
         class JSONFormatter(logging.Formatter):
             """JSON formatter for structured logging."""
