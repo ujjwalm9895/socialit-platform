@@ -64,6 +64,7 @@ class User(BaseModel):
     
     user_roles: Mapped[List["UserRole"]] = relationship(
         "UserRole",
+        foreign_keys="UserRole.user_id",
         back_populates="user",
         cascade="all, delete-orphan"
     )

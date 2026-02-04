@@ -16,6 +16,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.auth.routes import router as auth_router
 from app.core.config import settings
 from app.core.events import register_lifecycle_events
 from app.utils.health import router as health_router
@@ -32,12 +33,17 @@ def setup_logging() -> None:
     Sets up logging based on configuration:
     - LOG_LEVEL: Controls verbosity
     - LOG_FORMAT: json or text format
+    
+    Provides specific loggers for different modules:
+    - app.*: Application-specific modules
+    - uvicorn: Server logs
+    - sqlalchemy: Database queries
     """
+    import json
+    
     # Determine log format
     if settings.LOG_FORMAT.lower() == "json":
         # JSON format for production (structured logging)
-        import json
-        
         class JSONFormatter(logging.Formatter):
             """JSON formatter for structured logging."""
             
@@ -46,16 +52,26 @@ def setup_logging() -> None:
                     "timestamp": self.formatTime(record, self.datefmt),
                     "level": record.levelname,
                     "logger": record.name,
+                    "module": record.module,
+                    "function": record.funcName,
+                    "line": record.lineno,
                     "message": record.getMessage(),
                 }
                 
                 # Add exception info if present
                 if record.exc_info:
                     log_data["exception"] = self.formatException(record.exc_info)
+                    log_data["exception_type"] = record.exc_info[0].__name__ if record.exc_info else None
                 
                 # Add extra fields if present
                 if hasattr(record, "extra"):
                     log_data.update(record.extra)
+                
+                # Add request context if available
+                if hasattr(record, "request_id"):
+                    log_data["request_id"] = record.request_id
+                if hasattr(record, "user_id"):
+                    log_data["user_id"] = record.user_id
                 
                 return json.dumps(log_data)
         
@@ -63,7 +79,7 @@ def setup_logging() -> None:
     else:
         # Text format for development (human-readable)
         formatter = logging.Formatter(
-            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            fmt="%(asctime)s | %(levelname)-8s | %(name)-30s | %(module)s.%(funcName)s:%(lineno)d | %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S"
         )
     
@@ -73,16 +89,42 @@ def setup_logging() -> None:
     
     root_logger = logging.getLogger()
     root_logger.setLevel(getattr(logging, settings.LOG_LEVEL.upper()))
+    root_logger.handlers.clear()
     root_logger.addHandler(handler)
+    
+    # Application-specific loggers with specific levels
+    app_logger = logging.getLogger("app")
+    app_logger.setLevel(getattr(logging, settings.LOG_LEVEL.upper()))
+    
+    # Auth module logger
+    logging.getLogger("app.auth").setLevel(logging.DEBUG if settings.DEBUG else logging.INFO)
+    
+    # Database module logger
+    logging.getLogger("app.db").setLevel(logging.DEBUG if settings.DEBUG else logging.INFO)
+    
+    # Models logger
+    logging.getLogger("app.models").setLevel(logging.INFO)
+    
+    # Core module logger
+    logging.getLogger("app.core").setLevel(logging.INFO)
     
     # Set log levels for third-party libraries
     logging.getLogger("uvicorn").setLevel(logging.INFO)
     logging.getLogger("uvicorn.access").setLevel(
-        logging.INFO if settings.DEBUG else logging.WARNING
+        logging.DEBUG if settings.DEBUG else logging.WARNING
     )
+    logging.getLogger("uvicorn.error").setLevel(logging.INFO)
+    
+    # SQLAlchemy logging
     logging.getLogger("sqlalchemy.engine").setLevel(
-        logging.INFO if settings.DATABASE_ECHO else logging.WARNING
+        logging.DEBUG if settings.DATABASE_ECHO else logging.WARNING
     )
+    logging.getLogger("sqlalchemy.pool").setLevel(logging.WARNING)
+    logging.getLogger("sqlalchemy.dialects").setLevel(logging.WARNING)
+    
+    # Suppress noisy loggers
+    logging.getLogger("passlib").setLevel(logging.WARNING)
+    logging.getLogger("bcrypt").setLevel(logging.WARNING)
 
 
 # ============================================================================
@@ -145,6 +187,10 @@ def create_app() -> FastAPI:
     # Health check router (no authentication required)
     app.include_router(health_router)
     logger.info("Health check router registered")
+    
+    # Authentication router
+    app.include_router(auth_router)
+    logger.info("Authentication router registered")
     
     # TODO: Add API routers here when ready
     # Example:
