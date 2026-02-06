@@ -31,7 +31,13 @@ We're building the frontend step by step against your existing backend (FastAPI 
 
 ---
 
+## Site settings from API ✅
+- **Theme:** Fetched from `GET /cms/site-settings/theme`, applied as CSS variables (`--color-primary`, etc.) on `:root`.
+- **Header:** Fetched from `GET /cms/site-settings/header`. Renders logo (text or image), menu items, CTA button, and styling (background, text color, sticky, padding). Falls back to default nav if API fails or returns empty.
+- **Footer:** Fetched from `GET /cms/site-settings/footer`. Renders copyright (supports `{year}`), columns with links, and styling. Falls back to default links if API fails or returns empty.
+- **`components/SiteSettingsProvider.tsx`** – `useSiteSettings()` hook fetches theme, header, footer on mount; `PublicLayout` uses it and passes config to Header/Footer.
+
 ## Next (optional)
-- Load header/footer/theme from `/cms/site-settings/*` and render in Header/Footer
-- Admin CRUD for services, blogs, case studies (currently only homepage builder)
-- Dashboard stats on `/admin`
+- Admin UI to edit header, footer, theme (PUT `/cms/site-settings/header`, etc.) – backend already has the endpoints.
+- Admin CRUD for services, blogs, case studies (currently only homepage builder).
+- Dashboard stats on `/admin`.
