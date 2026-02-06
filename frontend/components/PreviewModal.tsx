@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import SectionRenderer from "./SectionRenderer";
-import { getSiteUrl } from "../lib/env";
+import { getSiteUrl } from "@/lib/env";
 
 interface PreviewModalProps {
   isOpen: boolean;

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import useSWR from "swr";
-import { fetcher, LAYOUT_SWR_CONFIG } from "../lib/swr";
+import { fetcher, LAYOUT_SWR_CONFIG } from "@/lib/swr";
 
 interface FooterColumn {
   id: string;
