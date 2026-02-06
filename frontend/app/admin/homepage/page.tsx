@@ -72,10 +72,11 @@ export default function HomepageBuilderPage() {
 
   const addSection = (type: string) => {
     if (!page) return;
+    const defaults = SECTION_DEFAULTS[type] ?? {};
     const newSection: Section = {
       id: `section-${Date.now()}`,
       type,
-      data: { ...SECTION_DEFAULTS[type] } || {},
+      data: { ...defaults },
     };
     const content = [...(page.content || []), newSection];
     setPage({ ...page, content });
