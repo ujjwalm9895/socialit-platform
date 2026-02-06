@@ -1,32 +1,12 @@
 import type { NextConfig } from "next";
 import path from "path";
-import { existsSync } from "fs";
-
-// When Vercel runs from repo root (no Root Directory), cwd is repo root and app lives in frontend/
-const inMonorepo = existsSync(path.join(process.cwd(), "frontend", "lib"));
-const appRoot = inMonorepo ? path.join(process.cwd(), "frontend") : process.cwd();
 
 const nextConfig: NextConfig = {
-  // Performance optimizations
   reactStrictMode: true,
 
-  // Must match turbopack.root (Next.js requirement when using turbopack.root)
-  outputFileTracingRoot: appRoot,
-
-  turbopack: {
-    root: appRoot,
-    resolveAlias: {
-      // Use "." so @ resolves relative to turbopack.root (works on Vercel)
-      "@": ".",
-    },
-  },
-  // Production build uses --webpack; this alias makes @/lib/* resolve on Vercel
   webpack: (config) => {
     config.resolve = config.resolve || {};
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      "@": path.resolve(appRoot),
-    };
+    config.resolve.alias = { ...config.resolve.alias, "@": path.resolve(__dirname) };
     return config;
   },
 
