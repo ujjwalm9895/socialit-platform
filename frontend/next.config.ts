@@ -1,9 +1,20 @@
 import type { NextConfig } from "next";
+import path from "path";
+
+// Resolve @ to app root (works when cwd is frontend, e.g. Vercel Root Directory = frontend)
+const appRoot = path.resolve(process.cwd());
 
 const nextConfig: NextConfig = {
   // Performance optimizations
   reactStrictMode: true,
-  
+
+  turbopack: {
+    root: appRoot,
+    resolveAlias: {
+      "@": appRoot,
+    },
+  },
+
   // Optimize images
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -14,13 +25,6 @@ const nextConfig: NextConfig = {
   
   // Compress responses
   compress: true,
-  
-  // Turbopack configuration (Next.js 16+ uses Turbopack by default)
-  // Turbopack handles code splitting and optimization automatically
-  turbopack: {
-    // Turbopack optimizations are handled automatically
-    // No manual configuration needed for most use cases
-  },
 };
 
 export default nextConfig;
