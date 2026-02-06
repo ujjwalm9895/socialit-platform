@@ -141,6 +141,8 @@ export default function DynamicPage() {
     );
   }
 
+  if (!page) return null;
+
   // Normalize content to always be an array (backend may return list or legacy shape)
   const sections = Array.isArray(page.content)
     ? page.content

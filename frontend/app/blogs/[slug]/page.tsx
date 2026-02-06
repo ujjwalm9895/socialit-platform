@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Header from "../../../components/AnimatedHeader";
 import Footer from "../../../components/Footer";
+import { apiUrl } from "../../../lib/api";
 
 interface Blog {
   id: string;
@@ -29,8 +30,6 @@ export default function BlogDetailPage() {
   const [blog, setBlog] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   useEffect(() => {
     if (!slug) return;

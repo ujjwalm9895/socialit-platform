@@ -894,11 +894,8 @@ def main():
         print("[SUCCESS] Data population completed successfully!")
         print("=" * 60)
         print("\nYou can now:")
-        print("  - Visit http://localhost:3000/ to see the homepage")
-        print("  - Visit http://localhost:3000/about to see the About page")
-        print("  - Visit http://localhost:3000/contact to see the Contact page")
-        print("  - Visit http://localhost:3000/careers to see the Careers page")
-        print("  - Visit http://localhost:3000/admin to manage content")
+        print("  - Visit your frontend (e.g. / to see the homepage, /about, /contact, /careers)")
+        print("  - Visit /admin to manage content")
         print("  - Check /services, /blogs, /case-studies pages")
 
     except Exception as e:

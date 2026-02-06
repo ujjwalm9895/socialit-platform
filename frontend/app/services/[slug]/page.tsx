@@ -5,6 +5,7 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import Header from "../../../components/AnimatedHeader";
 import Footer from "../../../components/Footer";
+import { apiUrl } from "../../../lib/api";
 
 interface Service {
   id: string;
@@ -17,6 +18,7 @@ interface Service {
   icon_url?: string;
   meta_title?: string;
   meta_description?: string;
+  status?: string;
 }
 
 export default function ServiceDetailPage() {
@@ -25,8 +27,6 @@ export default function ServiceDetailPage() {
   const [service, setService] = useState<Service | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   useEffect(() => {
     if (!slug) return;

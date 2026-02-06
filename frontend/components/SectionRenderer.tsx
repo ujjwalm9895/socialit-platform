@@ -1680,7 +1680,7 @@ export default function SectionRenderer({ section, index }: SectionRendererProps
     }
   };
 
-  const getAnimationTransition = () => {
+  const getAnimationTransition = (): { type: "spring"; stiffness: number; damping: number; delay: number } | { duration: number; delay: number; ease: string } => {
     const duration = section.data?.animationDuration || 0.6;
     const delay = section.data?.animationDelay || 0;
     const easing = section.data?.animationEasing || "easeOut";

@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { apiUrl } from "../../../lib/api";
 
 interface Role {
   id: string;
@@ -54,7 +55,6 @@ export default function UsersPage() {
     role_ids: [],
   });
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   useEffect(() => {
     fetchUsers();

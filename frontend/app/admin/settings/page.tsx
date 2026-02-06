@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { getApiUrl } from "../../../lib/env";
 
 interface SiteSettings {
   site_name: string;
@@ -44,7 +45,7 @@ export default function SettingsPage() {
     heading_font: "Inter",
   });
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const apiUrl = getApiUrl();
 
   useEffect(() => {
     // Load settings from localStorage or API

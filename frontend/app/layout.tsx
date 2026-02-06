@@ -4,17 +4,9 @@ import "./globals.css";
 import ThemeProvider from "../components/ThemeProvider";
 import UISettingsProvider from "../components/UISettingsProvider";
 
-
-import { getApiUrl } from "../lib/env";
-const apiUrl = getApiUrl();
-
 export const metadata: Metadata = {
   title: "Social IT - Digital Solutions",
   description: "We build amazing digital solutions for your business",
-  links: [
-    { rel: "preconnect", href: apiUrl },
-    { rel: "dns-prefetch", href: apiUrl },
-  ],
 };
 
 export default function RootLayout({
