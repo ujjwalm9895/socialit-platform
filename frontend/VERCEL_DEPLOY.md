@@ -95,7 +95,7 @@ After this, the frontend can talk to the API without CORS errors.
 - **Framework:** Next.js 16 (App Router).
 - **Build command:** `npm run build` (runs `next build --webpack`).
 - **Output:** Standard Next.js standalone/server output; Vercel runs `next start`.
-- **Path alias:** `@/` points to the `frontend` folder (via `tsconfig.json` and `next.config.ts`). All imports use `@/lib/...`, `@/components/...`, etc., so the root directory **must** be `frontend`.
+- **Path alias:** `@/` is configured in `tsconfig.json` and `next.config.ts`. The **lib** module is imported with **relative paths** (e.g. `../../lib/api`) so the build does not depend on the alias for those files. Root directory **must** be `frontend` so that `package.json` and the app are found.
 
 ---
 
@@ -124,18 +124,13 @@ You don’t need to configure anything extra on Vercel for these; the project is
 
 **“Module not found: Can't resolve '@/lib/api'” or “Can't resolve '@/lib/env'”**
 
-This happens when the **`frontend/lib`** folder is missing from the code Vercel builds. The app imports `@/lib/api`, `@/lib/env`, `@/lib/swr`, and `@/lib/theme`; those files must exist under `frontend/lib/`.
+The app now imports **lib via relative paths** (e.g. `../../../lib/api`), so this error should not occur if the repo is complete. If you still see it:
 
 1. **Root Directory must be `frontend`**  
-   Vercel → Project → **Settings** → **General** → **Root Directory** → set to **`frontend`** → save. If the root is wrong, `@` points to the repo root and there is no `lib` there.
+   Vercel → Project → **Settings** → **General** → **Root Directory** → set to **`frontend`** → save, then redeploy.
 
-2. **Commit and push the `lib` folder**  
-   The repo Vercel builds from must contain:
-   - `frontend/lib/api.ts`
-   - `frontend/lib/env.ts`
-   - `frontend/lib/swr.ts`
-   - `frontend/lib/theme.ts`  
-   If these were added only on your machine, run `git add frontend/lib` and `git commit` and `git push`, then redeploy on Vercel.
+2. **Ensure `frontend/lib` is in the repo**  
+   The repo must contain `frontend/lib/api.ts`, `frontend/lib/env.ts`, `frontend/lib/swr.ts`, and `frontend/lib/theme.ts`. Run `git add frontend/lib` and `git push` if needed, then redeploy. You can also try **Redeploy** → **Clear build cache** on Vercel.
 
 **“NEXT_PUBLIC_API_URL is not defined” or API calls fail in the browser**
 

@@ -8,8 +8,8 @@ import AnimatedButton from "../../../components/AnimatedButton";
 import AnimatedModal from "../../../components/AnimatedModal";
 import AnimatedCard from "../../../components/AnimatedCard";
 import JSONImportModal from "../../../components/JSONImportModal";
-import { apiUrl } from "@/lib/api";
-import { getSiteUrl } from "@/lib/env";
+import { apiUrl } from "../../../lib/api";
+import { getSiteUrl } from "../../../lib/env";
 
 interface CaseStudy {
   id: string;

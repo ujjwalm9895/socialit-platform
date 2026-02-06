@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import apiClient from "@/lib/api";
+import apiClient from "../../../lib/api";
 import {
   DndContext,
   closestCenter,
