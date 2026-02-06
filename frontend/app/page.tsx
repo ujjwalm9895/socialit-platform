@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import SectionRenderer, { type Section } from "../components/SectionRenderer";
-import api from "./lib/api";
+import api from "./api-client";
 
 type PageData = { id: string; title: string; slug: string; content: Section[]; status: string };
 
