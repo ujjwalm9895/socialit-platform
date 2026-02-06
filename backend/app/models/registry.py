@@ -11,6 +11,7 @@ from app.models.rbac import RolePermission, UserRole
 from app.models.role import Role
 from app.models.service import Service
 from app.models.user import User
+from app.models.site_settings import SiteSettings
 
 logger = logging.getLogger(__name__)
 

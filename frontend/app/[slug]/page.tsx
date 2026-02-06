@@ -1,8 +1,17 @@
 "use client";
 
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, Suspense } from "react";
 import { useParams } from "next/navigation";
+import dynamic from "next/dynamic";
+import useSWR from "swr";
+import Header from "../../components/AnimatedHeader";
+import Footer from "../../components/Footer";
+import { fetcher, PAGE_SWR_CONFIG } from "../../lib/swr";
+
+const SectionRenderer = dynamic(() => import("../../components/SectionRenderer"), {
+  loading: () => <div className="min-h-screen" />,
+  ssr: false,
+});
 
 interface PageSection {
   type: string;
@@ -26,34 +35,15 @@ interface Page {
 export default function DynamicPage() {
   const params = useParams();
   const slug = params?.slug as string;
-  const [page, setPage] = useState<Page | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { data: page, error, isLoading } = useSWR<Page>(
+    slug ? `/cms/pages/slug/${slug}` : null,
+    fetcher,
+    { ...PAGE_SWR_CONFIG, shouldRetryOnError: (err) => err?.response?.status !== 404 }
+  );
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-  useEffect(() => {
-    if (!slug) return;
-
-    const fetchPage = async () => {
-      try {
-        setLoading(true);
-        setError("");
-        const response = await axios.get(`${apiUrl}/cms/pages/slug/${slug}`);
-        setPage(response.data);
-      } catch (err: any) {
-        if (err.response?.status === 404) {
-          setError("Page not found");
-        } else {
-          setError(err.response?.data?.detail || "Failed to load page");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPage();
-  }, [slug, apiUrl]);
+  const loading = isLoading;
+  const is404 = error && (error as any)?.response?.status === 404;
+  const errorMessage = is404 ? "Page not found" : (error && (error as any)?.response?.data?.detail) || "Failed to load page";
 
   useEffect(() => {
     if (!page) return;
@@ -96,140 +86,111 @@ export default function DynamicPage() {
     }
   }, [page]);
 
-  const renderSection = (section: PageSection, index: number) => {
-    switch (section.type) {
-      case "hero":
-        return (
-          <section
-            key={index}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20 px-4"
-          >
-            <div className="max-w-4xl mx-auto text-center">
-              {section.data?.heading && (
-                <h1 className="text-5xl font-bold mb-4">
-                  {section.data.heading}
-                </h1>
-              )}
-              {section.data?.subheading && (
-                <p className="text-xl mb-8 opacity-90">
-                  {section.data.subheading}
-                </p>
-              )}
-              {section.data?.buttonText && section.data?.buttonLink && (
-                <a
-                  href={section.data.buttonLink}
-                  className="inline-block bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
-                >
-                  {section.data.buttonText}
-                </a>
-              )}
-            </div>
-          </section>
-        );
-
-      case "text":
-        return (
-          <section key={index} className="py-12 px-4">
-            <div className="max-w-3xl mx-auto">
-              <div
-                className="prose prose-lg max-w-none"
-                dangerouslySetInnerHTML={{
-                  __html: section.data?.content
-                    ? section.data.content.replace(/\n/g, "<br />")
-                    : "",
-                }}
-              />
-            </div>
-          </section>
-        );
-
-      case "image":
-        return (
-          <section key={index} className="py-8 px-4">
-            <div className="max-w-4xl mx-auto">
-              {section.data?.url && (
-                <img
-                  src={section.data.url}
-                  alt={section.data?.alt || ""}
-                  className="w-full h-auto rounded-lg shadow-lg"
-                />
-              )}
-            </div>
-          </section>
-        );
-
-      default:
-        return (
-          <section key={index} className="py-8 px-4">
-            <div className="max-w-3xl mx-auto">
-              <div className="bg-gray-100 p-4 rounded">
-                <p className="text-gray-600 text-sm">
-                  Unknown section type: {section.type}
-                </p>
-                <pre className="mt-2 text-xs overflow-auto">
-                  {JSON.stringify(section.data, null, 2)}
-                </pre>
-              </div>
-            </div>
-          </section>
-        );
-    }
-  };
 
   useEffect(() => {
-    if (loading) {
-      document.title = "Loading...";
-    } else if (error || !page) {
-      document.title = "Page Not Found";
-    }
+    if (loading && !page) document.title = "Loading...";
+    else if (error || !page) document.title = "Page Not Found";
   }, [loading, error, page]);
 
-  if (loading) {
+  if (loading && !page) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading page...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !page) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {error || "Page Not Found"}
-          </h1>
-          <p className="text-gray-600 mb-8">
-            The page you're looking for doesn't exist.
-          </p>
-          <a
-            href="/"
-            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
-          >
-            Go Home
-          </a>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <main className="min-h-screen">
-      {page.content && page.content.length > 0 ? (
-        page.content.map((section, index) => renderSection(section, index))
-      ) : (
-        <div className="min-h-screen flex items-center justify-center px-4">
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--color-background)" }}>
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              {page.title}
-            </h1>
-            <p className="text-gray-600">This page has no content yet.</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: "var(--color-primary)" }} />
+            <p style={{ color: "var(--color-text-secondary)" }}>Loading page...</p>
           </div>
         </div>
-      )}
-    </main>
+        <Footer />
+      </>
+    );
+  }
+
+  if ((error || !page) && !loading) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: "var(--color-background)" }}>
+          <div className="text-center">
+            <h1
+              className="text-4xl font-bold mb-4"
+              style={{ color: "var(--color-text)" }}
+            >
+              {errorMessage}
+            </h1>
+            <p 
+              className="mb-8"
+              style={{ color: "var(--color-text-secondary)" }}
+            >
+              The page you're looking for doesn't exist.
+            </p>
+            <a
+              href="/"
+              className="inline-block text-white px-6 py-3 rounded-lg transition hover:opacity-90"
+              style={{
+                background: `linear-gradient(to right, var(--color-primary), var(--color-secondary))`,
+              }}
+            >
+              Go Home
+            </a>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  // Normalize content to always be an array (backend may return list or legacy shape)
+  const sections = Array.isArray(page.content)
+    ? page.content
+    : page.content && typeof page.content === "object"
+      ? [page.content]
+      : [];
+
+  return (
+    <>
+      <Header />
+      <main className="min-h-screen">
+        {sections.length > 0 ? (
+          <Suspense fallback={<div className="min-h-screen" />}>
+            {sections.map((section: PageSection, index: number) => (
+              <SectionRenderer
+                key={(section as any).id || `section-${index}`}
+                section={{
+                  type: (section as any).type || "raw",
+                  data: (section as any).data ?? (section as any),
+                  id: (section as any).id || `section-${index}`,
+                }}
+                index={index}
+              />
+            ))}
+          </Suspense>
+        ) : (
+          <div 
+            className="min-h-screen flex items-center justify-center px-4"
+            style={{
+              background: `linear-gradient(to bottom, var(--color-background), var(--color-surface))`,
+            }}
+          >
+            <div className="text-center max-w-2xl">
+              <h1 
+                className="text-5xl font-bold mb-6"
+                style={{ color: "var(--color-text)" }}
+              >
+                {page.title}
+              </h1>
+              <p 
+                className="text-xl"
+                style={{ color: "var(--color-text-secondary)" }}
+              >
+                This page has no content yet.
+              </p>
+            </div>
+          </div>
+        )}
+      </main>
+      <Footer />
+    </>
   );
 }

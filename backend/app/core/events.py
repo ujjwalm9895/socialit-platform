@@ -13,7 +13,7 @@ import sys
 from fastapi import FastAPI
 
 from app.core.config import settings
-from app.db.init_db import init_db
+from app.db.base import Base
 from app.db.session import check_db_connection, engine, get_db_stats
 
 logger = logging.getLogger(__name__)
@@ -107,12 +107,12 @@ def register_startup_events(app: FastAPI) -> None:
             
             # Check database connectivity (fail fast if unavailable)
             startup_db_check()
-            
-            # Initialize database tables in development mode
-            if settings.is_development:
-                logger.info("Development mode: Initializing database tables...")
-                init_db()
-                logger.info("Database tables initialized")
+
+            # Ensure all tables exist (create missing ones only; safe for production).
+            # Uses Base.metadata.create_all so existing tables are untouched.
+            logger.info("Ensuring database tables exist...")
+            Base.metadata.create_all(bind=engine)
+            logger.info("Database tables ready")
             
             logger.info("Application startup completed successfully")
             

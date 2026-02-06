@@ -28,13 +28,14 @@ async def get_current_user(
         if user_id is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication credentials",
+                detail="Invalid authentication credentials - token missing user ID",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-    except ValueError:
+    except ValueError as e:
+        # Token is invalid or expired
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication credentials",
+            detail="Invalid or expired authentication token. Please log in again.",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
@@ -86,6 +87,6 @@ def require_roles(*required_roles: str):
     return role_checker
 
 
-RequireAdmin = Depends(require_roles("admin"))
-RequireEditor = Depends(require_roles("editor"))
-RequireViewer = Depends(require_roles("viewer"))
+RequireAdmin = require_roles("admin")
+RequireEditor = require_roles("editor")
+RequireViewer = require_roles("viewer")

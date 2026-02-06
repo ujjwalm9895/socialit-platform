@@ -15,3 +15,4 @@ from app.models.rbac import UserRole, RolePermission  # noqa: F401
 from app.models.service import Service  # noqa: F401
 from app.models.page import Page  # noqa: F401
 from app.models.case_study import CaseStudy  # noqa: F401
+from app.models.site_settings import SiteSettings  # noqa: F401
