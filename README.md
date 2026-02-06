@@ -19,6 +19,8 @@ A production-grade headless CMS built with FastAPI (backend) and Next.js (fronte
 
 ## 🚀 Quick Start
 
+**Local dev without .env:** You can start backend and frontend without creating a `.env` file. The backend uses safe dev defaults (`SECRET_KEY`, `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/socialit_cms`) and will start even if PostgreSQL is not running (it will log a warning; API calls will fail until the DB is up). The frontend uses `http://localhost:8000` and `http://localhost:3000` by default. For full functionality (auth, CMS, DB), create the database and optionally copy `backend/.env.example` to `backend/.env` and set values as below.
+
 ### 1. Clone Repository
 
 ```bash

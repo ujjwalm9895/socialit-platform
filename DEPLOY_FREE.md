@@ -104,8 +104,9 @@ In the Vercel project → **Settings** → **Environment Variables**, add:
 | Variable                 | Value |
 |--------------------------|--------|
 | `NEXT_PUBLIC_API_URL`    | Your Render backend URL, e.g. `https://socialit-api.onrender.com` |
+| `NEXT_PUBLIC_SITE_URL`   | (Optional) Your frontend URL, e.g. `https://your-app.vercel.app`. Used for admin preview links; defaults to request origin when unset. |
 
-Use the same variable for Production, Preview, and Development if you want all to use the same API, or set different values per environment.
+Use the same variables for Production, Preview, and Development if you want all to use the same API, or set different values per environment.
 
 ### 3.3 Deploy
 
@@ -130,3 +131,13 @@ Use the same variable for Production, Preview, and Development if you want all t
 - **populate_socialit_data.py**: Run from the `backend` directory with `DATABASE_URL` (and any other required env) set. Safe to run multiple times; it creates or updates content by slug.
 
 For any issues, check Render and Vercel logs and ensure CORS and `NEXT_PUBLIC_API_URL` match your deployed URLs.
+
+---
+
+## 6. Environment variables reference
+
+**Backend** (see `backend/.env.example`): `APP_NAME`, `ENVIRONMENT`, `DEBUG`, `SECRET_KEY` (min 32 chars), `DATABASE_URL`, `DATABASE_POOL_SIZE`, `DATABASE_MAX_OVERFLOW`, `DATABASE_ECHO`, `CORS_ORIGINS`, `CORS_CREDENTIALS`, `CORS_METHODS`, `CORS_HEADERS`, `API_V1_PREFIX`, `API_TITLE`, `API_VERSION`, `LOG_LEVEL`, `LOG_FORMAT`, `ALGORITHM`, `ACCESS_TOKEN_EXPIRE_MINUTES`, `REFRESH_TOKEN_EXPIRE_DAYS`, `PORT` (optional; Render sets this).
+
+**Frontend** (see `frontend/.env.example`): `NEXT_PUBLIC_API_URL` (required in production), `NEXT_PUBLIC_SITE_URL` (optional; for admin preview links).
+
+**Security:** Never commit `.env` or any file containing real secrets. Use `.env.example` as a template only; actual values go in Render/Vercel environment or local `.env` (which is in `.gitignore`).

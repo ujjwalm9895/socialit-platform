@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { getTheme, updateThemeVariables } from "../lib/theme";
+import { getTheme, updateThemeVariables, type Theme } from "../lib/theme";
 import { fetcher, LAYOUT_SWR_CONFIG } from "../lib/swr";
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -20,7 +20,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
   useEffect(() => {
     if (themeData && Object.keys(themeData).length > 0) {
-      updateThemeVariables(themeData);
+      updateThemeVariables(themeData as Theme);
       if (typeof window !== "undefined") {
         localStorage.setItem("site-theme", JSON.stringify(themeData));
       }

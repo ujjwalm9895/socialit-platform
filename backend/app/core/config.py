@@ -45,9 +45,9 @@ class Settings(BaseSettings):
     # ============================================================================
     # Security Settings
     # ============================================================================
-    
+    # Dev default so local dev starts without .env; always set SECRET_KEY in production.
     SECRET_KEY: str = Field(
-        ...,
+        default="dev-secret-key-min-32-chars-change-in-prod",
         min_length=32,
         description="Secret key for cryptographic operations (min 32 chars)"
     )
@@ -72,9 +72,9 @@ class Settings(BaseSettings):
     # ============================================================================
     # Database Settings
     # ============================================================================
-    
+    # Dev default so local dev starts without .env; set DATABASE_URL in production.
     DATABASE_URL: PostgresDsn = Field(
-        ...,
+        default="postgresql://postgres:postgres@localhost:5432/socialit_cms",
         description="PostgreSQL database connection URL"
     )
     

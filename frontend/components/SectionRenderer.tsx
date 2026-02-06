@@ -1680,14 +1680,14 @@ export default function SectionRenderer({ section, index }: SectionRendererProps
     }
   };
 
-  const getAnimationTransition = (): { type: "spring"; stiffness: number; damping: number; delay: number } | { duration: number; delay: number; ease: string } => {
+  const getAnimationTransition = () => {
     const duration = section.data?.animationDuration || 0.6;
     const delay = section.data?.animationDelay || 0;
     const easing = section.data?.animationEasing || "easeOut";
     
     if (easing === "spring") {
       return {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 300,
         damping: 20,
         delay,
@@ -1697,7 +1697,7 @@ export default function SectionRenderer({ section, index }: SectionRendererProps
     return {
       duration,
       delay,
-      ease: easing,
+      ease: easing as "easeIn" | "easeOut" | "easeInOut" | "linear",
     };
   };
 

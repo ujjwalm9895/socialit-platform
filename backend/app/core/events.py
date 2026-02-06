@@ -105,14 +105,25 @@ def register_startup_events(app: FastAPI) -> None:
             # Import models registry to ensure all models are loaded
             import app.models.registry  # noqa: F401
             
-            # Check database connectivity (fail fast if unavailable)
-            startup_db_check()
+            # Check database connectivity. In development, allow startup even if DB is down.
+            db_ok = True
+            try:
+                startup_db_check()
+            except RuntimeError as db_err:
+                if settings.is_development:
+                    db_ok = False
+                    logger.warning(
+                        "Database unavailable in development: %s. Server will start; API will fail until DB is up.",
+                        db_err,
+                    )
+                else:
+                    raise
 
             # Ensure all tables exist (create missing ones only; safe for production).
-            # Uses Base.metadata.create_all so existing tables are untouched.
-            logger.info("Ensuring database tables exist...")
-            Base.metadata.create_all(bind=engine)
-            logger.info("Database tables ready")
+            if db_ok:
+                logger.info("Ensuring database tables exist...")
+                Base.metadata.create_all(bind=engine)
+                logger.info("Database tables ready")
             
             logger.info("Application startup completed successfully")
             

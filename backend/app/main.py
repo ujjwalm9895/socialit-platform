@@ -337,7 +337,8 @@ if __name__ == "__main__":
     For production (e.g. Render): use run.py or set PORT=10000 and run uvicorn.
     """
     import os
-    port = int(os.environ.get("PORT", "8000" if settings.DEBUG else "10000"))
+    # Default port 8000 for local dev (no .env), 10000 for production (Render sets PORT).
+    port = int(os.environ.get("PORT", "8000" if (settings.DEBUG or settings.is_development) else "10000"))
     uvicorn.run(
         "app.main:app",
         host="0.0.0.0",
