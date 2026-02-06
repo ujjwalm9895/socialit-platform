@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import useSWR from "swr";
 import Header from "../components/AnimatedHeader";
 import Footer from "../components/Footer";
-import { fetcher, PAGE_SWR_CONFIG } from "@/lib/swr";
+import { fetcher, PAGE_SWR_CONFIG } from "../lib/swr";
 
 const SectionRenderer = dynamic(() => import("../components/SectionRenderer"), {
   loading: () => <div className="min-h-screen" />,

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import AnimatedCard from "../../components/AnimatedCard";
 import { motion } from "framer-motion";
-import { apiUrl } from "@/lib/api";
+import { apiUrl } from "../../lib/api";
 
 interface Stats {
   services: { total: number; published: number };

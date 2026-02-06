@@ -5,7 +5,7 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import Header from "../../../components/AnimatedHeader";
 import Footer from "../../../components/Footer";
-import { apiUrl } from "@/lib/api";
+import { apiUrl } from "../../../lib/api";
 
 interface Service {
   id: string;

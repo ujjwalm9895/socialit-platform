@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import apiClient from "@/lib/api";
+import apiClient from "../lib/api";
 
 interface ContactFormProps {
   onSubmit?: () => void;

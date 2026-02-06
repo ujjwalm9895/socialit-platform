@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import apiClient from "@/lib/api";
-import { getSiteUrl } from "@/lib/env";
+import apiClient from "../../../lib/api";
+import { getSiteUrl } from "../../../lib/env";
 import DraggablePageBuilder from "../pages/draggable-page-builder";
 import PreviewModal from "../../../components/PreviewModal";
 

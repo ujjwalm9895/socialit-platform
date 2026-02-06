@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import apiClient from "@/lib/api";
+import apiClient from "../../../lib/api";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   DndContext,

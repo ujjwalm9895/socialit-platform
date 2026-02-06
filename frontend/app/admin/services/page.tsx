@@ -10,8 +10,8 @@ import AnimatedCard from "../../../components/AnimatedCard";
 import Toast from "../../../components/Toast";
 import Tooltip from "../../../components/Tooltip";
 import JSONImportModal from "../../../components/JSONImportModal";
-import { apiUrl } from "@/lib/api";
-import { getSiteUrl } from "@/lib/env";
+import { apiUrl } from "../../../lib/api";
+import { getSiteUrl } from "../../../lib/env";
 
 interface Service {
   id: string;

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getTheme, saveTheme, defaultTheme, Theme } from "@/lib/theme";
-import apiClient from "@/lib/api";
+import { getTheme, saveTheme, defaultTheme, Theme } from "../../../lib/theme";
+import apiClient from "../../../lib/api";
 import { motion } from "framer-motion";
 
 export default function ThemePage() {
