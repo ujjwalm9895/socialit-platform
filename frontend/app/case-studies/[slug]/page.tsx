@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Header from "../../../components/AnimatedHeader";
 import Footer from "../../../components/Footer";
-import { apiUrl } from "../../../lib/api";
+import { apiUrl } from "@/lib/api";
 
 interface CaseStudy {
   id: string;

@@ -2,6 +2,8 @@
 
 Follow these steps in order. Your app lives in the **frontend** folder, so Vercel must use that as the root.
 
+**Fix for "Can't resolve '@/lib/api' or '../../../lib/api'":** All lib imports use `@/lib/...`. The build runs with `next build --webpack` and a webpack alias so `@` points to the frontend folder. You **must** set **Root Directory** to **`frontend`** in Vercel so the alias resolves correctly.
+
 ---
 
 ## Step 1: Open Vercel

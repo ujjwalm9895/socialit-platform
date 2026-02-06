@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { getApiUrl } from "../../../lib/env";
+import { getApiUrl } from "@/lib/env";
 
 interface SiteSettings {
   site_name: string;

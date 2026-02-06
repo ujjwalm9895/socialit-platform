@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import apiClient from "../../../lib/api";
+import apiClient from "@/lib/api";
 import PreviewModal from "../../../components/PreviewModal";
 import DraggablePageBuilder from "./draggable-page-builder";
 import AnimatedModal from "../../../components/AnimatedModal";

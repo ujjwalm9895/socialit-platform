@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { getApiUrl } from "../../../lib/env";
+import { getApiUrl } from "@/lib/env";
 
 export default function AdminLoginPage() {
   const router = useRouter();

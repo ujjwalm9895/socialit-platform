@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useSWR from "swr";
-import { fetcher, LAYOUT_SWR_CONFIG } from "../lib/swr";
+import { fetcher, LAYOUT_SWR_CONFIG } from "@/lib/swr";
 
 interface MenuItem {
   id: string;
