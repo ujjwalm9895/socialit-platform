@@ -48,11 +48,14 @@ export default function Home() {
   }
 
   if (error) {
+    const isProduction = typeof window !== "undefined" && !window.location.hostname.includes("localhost");
     return (
       <main className="min-h-[40vh] flex flex-col items-center justify-center gap-4 px-4">
-        <p className="text-red-600 text-center">{error}</p>
+        <p className="text-red-600 text-center font-medium">{error}</p>
         <p className="text-sm text-gray-500 text-center max-w-md">
-          Make sure the backend is running and <code className="bg-gray-100 px-1 rounded">NEXT_PUBLIC_API_URL</code> in <code className="bg-gray-100 px-1 rounded">.env.local</code> points to it (e.g. http://localhost:8000).
+          {isProduction
+            ? "The site could not reach the API. On Vercel, set NEXT_PUBLIC_API_URL to your backend URL (e.g. https://your-api.onrender.com) and add this site to your backend CORS_ORIGINS."
+            : "Make sure the backend is running and NEXT_PUBLIC_API_URL in .env.local points to it (e.g. http://localhost:8000)."}
         </p>
         <button
           type="button"
