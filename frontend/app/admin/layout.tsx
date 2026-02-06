@@ -26,7 +26,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
-        <a href="/admin/homepage" className="font-semibold text-gray-900">Homepage Builder</a>
+        <nav className="flex items-center gap-4">
+          <a href="/admin/homepage" className="font-semibold text-gray-900 hover:text-indigo-600">Homepage</a>
+          <a href="/admin/header" className="text-sm text-gray-600 hover:text-indigo-600">Header</a>
+          <a href="/admin/footer" className="text-sm text-gray-600 hover:text-indigo-600">Footer</a>
+          <a href="/admin/theme" className="text-sm text-gray-600 hover:text-indigo-600">Theme</a>
+        </nav>
         <div className="flex items-center gap-4">
           <a href="/" target="_blank" rel="noopener noreferrer" className="text-sm text-indigo-600 hover:underline">
             View site
