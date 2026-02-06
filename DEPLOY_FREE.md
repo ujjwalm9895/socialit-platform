@@ -59,7 +59,7 @@ The script `populate_socialit_data.py` seeds services, case studies, blogs, home
    - **Root Directory**: `backend`
    - **Runtime**: Python 3
    - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: Leave empty to use the **Procfile** in `backend/`, or set explicitly: `python run.py` (or `uvicorn app.main:app --host 0.0.0.0 --port $PORT` if Render sets `PORT`).
+   - **Start Command**: Leave **empty** so Render uses the Procfile, or set to exactly: **`python run.py`** (type only the command; do not copy any backticks or quotes from this doc).
 
 Render will use the **Procfile** in the root of the service (i.e. inside `backend/`). The Procfile runs:
 
@@ -68,6 +68,15 @@ web: python run.py
 ```
 
 `run.py` reads `PORT` from the environment (Render sets this) and starts the FastAPI app with uvicorn on `0.0.0.0:PORT`.
+
+**If you see:** `unexpected EOF while looking for matching backtick` — your **Start Command** in Render has a stray backtick (e.g. copied from docs). Fix it:
+
+1. Render Dashboard → your backend service → **Settings** (left sidebar).
+2. Under **Build & Deploy**, find **Start Command**.
+3. Either **clear it completely** (leave blank) so the Procfile is used, or replace with exactly:  
+   `python run.py`  
+   Type it yourself; do not copy from a line that has backticks or quotes around it.
+4. Click **Save Changes** and redeploy.
 
 ### 2.2 Environment variables (Render)
 

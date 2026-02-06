@@ -1,0 +1,15 @@
+# Render Blueprint: backend only. Use "New > Blueprint" in Render and connect this repo,
+# or copy the startCommand below into your Web Service if you created it manually.
+# Start command must be exactly: python run.py (no backticks or extra quotes).
+services:
+  - type: web
+    name: socialit-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: python run.py
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PYTHON_VERSION
+        value: "3.12.2"
