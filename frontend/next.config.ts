@@ -16,8 +16,18 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: appRoot,
     resolveAlias: {
-      "@": appRoot,
+      // Use "." so @ resolves relative to turbopack.root (works on Vercel)
+      "@": ".",
     },
+  },
+  // Ensure webpack (fallback) also resolves @ when used
+  webpack: (config, { isServer }) => {
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@": appRoot,
+    };
+    return config;
   },
 
   // Optimize images
