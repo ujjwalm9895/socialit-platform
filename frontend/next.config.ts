@@ -20,12 +20,12 @@ const nextConfig: NextConfig = {
       "@": ".",
     },
   },
-  // Ensure webpack (fallback) also resolves @ when used
-  webpack: (config, { isServer }) => {
+  // Production build uses --webpack; this alias makes @/lib/* resolve on Vercel
+  webpack: (config) => {
     config.resolve = config.resolve || {};
     config.resolve.alias = {
       ...config.resolve.alias,
-      "@": appRoot,
+      "@": path.resolve(appRoot),
     };
     return config;
   },
