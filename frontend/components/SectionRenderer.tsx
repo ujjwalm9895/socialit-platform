@@ -4,7 +4,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import ContactForm from "./ContactForm";
-import { fetcher, LIST_SWR_CONFIG } from "@/lib/swr";
+import { fetcher, LIST_SWR_CONFIG } from "../lib/swr";
 import {
   slideInLeft,
   slideInRight,

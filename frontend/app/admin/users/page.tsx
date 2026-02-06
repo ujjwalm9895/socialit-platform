@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { apiUrl } from "@/lib/api";
+import { apiUrl } from "../../../lib/api";
 
 interface Role {
   id: string;

@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { getTheme, updateThemeVariables, type Theme } from "@/lib/theme";
-import { fetcher, LAYOUT_SWR_CONFIG } from "@/lib/swr";
+import { getTheme, updateThemeVariables, type Theme } from "../lib/theme";
+import { fetcher, LAYOUT_SWR_CONFIG } from "../lib/swr";
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
