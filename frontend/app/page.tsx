@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import SectionRenderer, { type Section } from "../components/SectionRenderer";
-import api from "./api-client";
+import PublicLayout from "../components/PublicLayout";
+import api, { apiUrl } from "./api-client";
 
 type PageData = { id: string; title: string; slug: string; content: Section[]; status: string };
 
@@ -39,24 +40,32 @@ export default function Home() {
     fetchHome();
   }, []);
 
+  let content: React.ReactNode;
   if (loading) {
-    return (
+    content = (
       <main className="min-h-[40vh] flex items-center justify-center">
         <p className="text-gray-500">Loading...</p>
       </main>
     );
-  }
-
-  if (error) {
+  } else if (error) {
     const isProduction = typeof window !== "undefined" && !window.location.hostname.includes("localhost");
-    return (
+    content = (
       <main className="min-h-[40vh] flex flex-col items-center justify-center gap-4 px-4">
         <p className="text-red-600 text-center font-medium">{error}</p>
         <p className="text-sm text-gray-500 text-center max-w-md">
           {isProduction
-            ? "The site could not reach the API. On Vercel, set NEXT_PUBLIC_API_URL to your backend URL (e.g. https://your-api.onrender.com) and add this site to your backend CORS_ORIGINS."
+            ? "The site could not reach the API. Do the two steps below, then redeploy and Retry."
             : "Make sure the backend is running and NEXT_PUBLIC_API_URL in .env.local points to it (e.g. http://localhost:8000)."}
         </p>
+        {typeof window !== "undefined" && (
+          <p className="text-xs text-gray-400 text-center max-w-lg break-all">
+            API URL this build is using: <strong>{apiUrl || "(not set)"}</strong>
+          </p>
+        )}
+        <ol className="text-sm text-left text-gray-600 list-decimal list-inside space-y-1 max-w-md">
+          <li>Vercel → Project → Settings → Environment Variables → add <code className="bg-gray-100 px-1">NEXT_PUBLIC_API_URL</code> = your backend URL (no trailing slash), then Redeploy.</li>
+          <li>Backend (e.g. Render) → Environment → add <code className="bg-gray-100 px-1">https://socialit-platform.vercel.app</code> to CORS_ORIGINS, save.</li>
+        </ol>
         <button
           type="button"
           onClick={() => fetchHome()}
@@ -66,10 +75,8 @@ export default function Home() {
         </button>
       </main>
     );
-  }
-
-  if (!page || !page.content?.length) {
-    return (
+  } else if (!page || !page.content?.length) {
+    content = (
       <main className="min-h-[40vh] flex flex-col items-center justify-center gap-4">
         <h1 className="text-2xl font-bold text-gray-800">Welcome</h1>
         <p className="text-gray-600">No content yet. Build your homepage in the admin.</p>
@@ -78,16 +85,18 @@ export default function Home() {
         </a>
       </main>
     );
+  } else {
+    content = (
+      <main className="min-h-screen">
+        {page.content.map((section, i) => (
+          <SectionRenderer
+            key={section.id ?? `s-${i}`}
+            section={{ type: section.type, data: section.data || {}, id: section.id }}
+          />
+        ))}
+      </main>
+    );
   }
 
-  return (
-    <main className="min-h-screen">
-      {page.content.map((section, i) => (
-        <SectionRenderer
-          key={section.id ?? `s-${i}`}
-          section={{ type: section.type, data: section.data || {}, id: section.id }}
-        />
-      ))}
-    </main>
-  );
+  return <PublicLayout>{content}</PublicLayout>;
 }
