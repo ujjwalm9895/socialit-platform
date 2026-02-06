@@ -1,99 +1,154 @@
-# Deploy Frontend on Vercel (Easy Steps)
+# Deploy Frontend on Vercel (Backend Already Deployed)
 
-Follow these steps in order. Your app lives in the **frontend** folder, so Vercel must use that as the root.
-
-**Fix for "Can't resolve '@/lib/api' or '../../../lib/api'":** All lib imports use `@/lib/...`. The build runs with `next build --webpack` and a webpack alias so `@` points to the frontend folder. You **must** set **Root Directory** to **`frontend`** in Vercel so the alias resolves correctly.
+This guide deploys only the **Next.js frontend** to Vercel. Your **backend is already deployed** (e.g. on Render or elsewhere). The frontend will talk to it using the API URL you set in Vercel.
 
 ---
 
-## Step 1: Open Vercel
+## What You Need Before Starting
 
-1. Go to **https://vercel.com**
-2. Sign in (use **GitHub** so you can import your repo in one click)
-
----
-
-## Step 2: Import Your Project
-
-1. Click **Add New…** → **Project**
-2. Find your repository (e.g. `socialit-platform`) and click **Import**
-3. **Do not click Deploy yet** — configure in Step 3 and 4 first
+- Your **backend URL** (e.g. `https://your-api.onrender.com`) — no trailing slash.
+- A **Vercel account** (sign in with GitHub is easiest).
+- This repo pushed to **GitHub** (or another Git provider Vercel supports).
 
 ---
 
-## Step 3: Set Root Directory (Required)
+## Step 1: Open Vercel and Add the Project
 
-1. On the import page, find **Root Directory**
-2. Click **Edit**
-3. Type: **`frontend`**
-4. Confirm (you should see `frontend` next to Root Directory)
-
-If you skip this, the build will fail because Vercel will look for the app in the repo root instead of the `frontend` folder.
+1. Go to **https://vercel.com** and sign in (e.g. with GitHub).
+2. Click **Add New…** → **Project**.
+3. Import your **Git repository** (e.g. `socialit-platform`).
+4. **Do not click Deploy yet** — you must set the root directory and env vars first.
 
 ---
 
-## Step 4: Add Environment Variables
+## Step 2: Set Root Directory to `frontend`
 
-1. On the same page, expand **Environment Variables**
-2. Add **one** variable (required):
+The app code lives in the **`frontend`** folder. Vercel must use that as the project root.
 
-   | Name | Value |
-   |------|--------|
-   | `NEXT_PUBLIC_API_URL` | Your backend URL, e.g. `https://socialit-api.onrender.com` |
+1. On the import/configure page, find **Root Directory**.
+2. Click **Edit**.
+3. Enter: **`frontend`**.
+4. Confirm. You should see **Root Directory: frontend**.
 
-   - Use your **real** Render backend URL (no `http://` unless it really is HTTP).
-   - **No trailing slash** (wrong: `https://xxx.onrender.com/`).
-
-3. (Optional) Add a second variable for admin preview links:
-
-   | Name | Value |
-   |------|--------|
-   | `NEXT_PUBLIC_SITE_URL` | Your Vercel URL, e.g. `https://your-project.vercel.app` |
-
-   You can set this after the first deploy when you know your Vercel URL.
-
-4. For each variable, choose **Production** (and **Preview** if you want). Then click **Add**.
+If you skip this, the build will fail (Vercel would look for the app in the repo root).
 
 ---
 
-## Step 5: Deploy
+## Step 3: Add Environment Variables
 
-1. Click **Deploy**
-2. Wait 1–3 minutes for the build
-3. When it’s done, click **Visit** to open your site
+The frontend needs your **backend URL** so it can call the API.
+
+1. Expand **Environment Variables** on the same page.
+2. Add:
+
+   | Name                     | Value                          |
+   |--------------------------|---------------------------------|
+   | `NEXT_PUBLIC_API_URL`    | Your backend URL (no trailing slash), e.g. `https://your-api.onrender.com` |
+
+3. Optional (for preview links in admin):
+
+   | Name                     | Value                          |
+   |--------------------------|---------------------------------|
+   | `NEXT_PUBLIC_SITE_URL`   | Your Vercel URL, e.g. `https://your-project.vercel.app` |
+
+4. For each variable, select **Production** (and **Preview** if you want). Click **Add**.
 
 ---
 
-## Step 6: Allow Your Site in Backend CORS
+## Step 4: Deploy
 
-So the browser can call your API from the new site:
+1. Click **Deploy**.
+2. Wait for the build to finish (usually 1–3 minutes).
+3. When it’s done, click **Visit** to open your site.
 
-1. Open **Render** → your **backend** service → **Environment**
-2. Find **CORS_ORIGINS**
-3. Add your Vercel URL, e.g. `https://your-project.vercel.app`  
-   - If there are already other URLs, add this one **comma-separated, no spaces**
-4. Save — Render will redeploy the backend
+Your frontend is now live. It will call your existing backend using `NEXT_PUBLIC_API_URL`.
+
+---
+
+## Step 5: Allow the Vercel URL in Backend CORS
+
+The browser will block API requests unless your backend allows your Vercel domain.
+
+1. Open your **backend** hosting (e.g. Render dashboard).
+2. Go to your backend service → **Environment** (or **Environment Variables**).
+3. Find **CORS_ORIGINS** (or equivalent).
+4. Add your Vercel URL, e.g. **`https://your-project.vercel.app`**.
+   - If there are already other origins, add this one **comma-separated, no spaces**.
+5. Save. The backend may redeploy automatically.
+
+After this, the frontend can talk to the API without CORS errors.
 
 ---
 
 ## Checklist
 
-- [ ] Signed in at vercel.com
-- [ ] Imported repo and set **Root Directory** to **`frontend`**
-- [ ] Added **`NEXT_PUBLIC_API_URL`** (your Render backend URL, no trailing slash)
-- [ ] Clicked Deploy and build succeeded
-- [ ] Added the Vercel URL to backend **CORS_ORIGINS** on Render
+- [ ] Signed in at vercel.com and imported the repo.
+- [ ] **Root Directory** set to **`frontend`**.
+- [ ] **`NEXT_PUBLIC_API_URL`** set to your backend URL (no trailing slash).
+- [ ] Deploy completed successfully.
+- [ ] Backend **CORS_ORIGINS** includes your Vercel URL.
+
+---
+
+## Build and Project Details (Reference)
+
+- **Framework:** Next.js 16 (App Router).
+- **Build command:** `npm run build` (runs `next build --webpack`).
+- **Output:** Standard Next.js standalone/server output; Vercel runs `next start`.
+- **Path alias:** `@/` points to the `frontend` folder (via `tsconfig.json` and `next.config.ts`). All imports use `@/lib/...`, `@/components/...`, etc., so the root directory **must** be `frontend`.
+
+---
+
+## Dynamic Routes (Already Configured)
+
+Some pages are **dynamic**: they depend on the URL (e.g. `/[slug]`, `/blogs/my-post`, `/services/web-dev`) and fetch content from your API at **request time**, not at build time.
+
+| Route | Purpose |
+|-------|--------|
+| `/[slug]` | CMS pages by slug (e.g. `/about`, `/contact`, `/home`). |
+| `/blogs/[slug]` | Single blog post. |
+| `/services/[slug]` | Single service. |
+| `/case-studies/[slug]` | Single case study. |
+
+**How it’s set up**
+
+- Each of these segments has a **layout** that exports `dynamic = "force-dynamic"`, so Next.js does **not** try to pre-render them at build time.
+- The actual page components are **client-side** (`"use client"`): they read the slug from the URL and fetch data from your backend. No list of slugs is needed at build time.
+- **Vercel** serves the route shell and the client loads the right content from your API. New pages, blogs, or services you add in the CMS work as soon as you open their URL — no redeploy needed.
+
+You don’t need to configure anything extra on Vercel for these; the project is already set up for dynamic rendering.
 
 ---
 
 ## If the Build Fails
 
-- **“Module not found: @/lib/…” or “Cannot find module”**  
-  1. Root Directory must be **`frontend`**. In Vercel → Project → Settings → General, set **Root Directory** to **`frontend`**, save, and redeploy.  
-  2. Ensure these files exist and are committed in your repo: **`frontend/lib/api.ts`**, **`frontend/lib/env.ts`**, **`frontend/lib/swr.ts`**, **`frontend/lib/theme.ts`**. If any are missing, add them and push.
+**“Module not found: Can't resolve '@/lib/api'” or “Can't resolve '@/lib/env'”**
 
-- **“NEXT_PUBLIC_API_URL is not defined” or API calls fail**  
-  → Add `NEXT_PUBLIC_API_URL` in Vercel (Project → Settings → Environment Variables), then redeploy.
+This happens when the **`frontend/lib`** folder is missing from the code Vercel builds. The app imports `@/lib/api`, `@/lib/env`, `@/lib/swr`, and `@/lib/theme`; those files must exist under `frontend/lib/`.
 
-- **CORS errors in the browser**  
-  → Add your Vercel URL to **CORS_ORIGINS** in the Render backend and redeploy the backend.
+1. **Root Directory must be `frontend`**  
+   Vercel → Project → **Settings** → **General** → **Root Directory** → set to **`frontend`** → save. If the root is wrong, `@` points to the repo root and there is no `lib` there.
+
+2. **Commit and push the `lib` folder**  
+   The repo Vercel builds from must contain:
+   - `frontend/lib/api.ts`
+   - `frontend/lib/env.ts`
+   - `frontend/lib/swr.ts`
+   - `frontend/lib/theme.ts`  
+   If these were added only on your machine, run `git add frontend/lib` and `git commit` and `git push`, then redeploy on Vercel.
+
+**“NEXT_PUBLIC_API_URL is not defined” or API calls fail in the browser**
+
+- Add **`NEXT_PUBLIC_API_URL`** in Vercel (**Settings** → **Environment Variables**), then **Redeploy** (Production).
+
+**CORS errors in the browser console**
+
+- Add your **Vercel URL** (e.g. `https://your-project.vercel.app`) to **CORS_ORIGINS** in your backend environment and redeploy the backend.
+
+---
+
+## Changing the Backend URL Later
+
+1. Vercel → your project → **Settings** → **Environment Variables**.
+2. Edit **`NEXT_PUBLIC_API_URL`** to the new backend URL (no trailing slash).
+3. **Redeploy** the project (Deployments → … → Redeploy) so the new value is baked into the build.
