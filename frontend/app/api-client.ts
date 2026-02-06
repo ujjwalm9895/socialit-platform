@@ -35,5 +35,18 @@ client.interceptors.response.use(
   }
 );
 
+/** Get current user ID from JWT (sub claim). Returns null if no token or invalid. */
+export function getCurrentUserId(): string | null {
+  if (typeof window === "undefined") return null;
+  const token = localStorage.getItem("access_token");
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.sub ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export default client;
 export const apiUrl = getApiUrl();
