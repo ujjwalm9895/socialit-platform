@@ -45,7 +45,8 @@ export default function AdminPage() {
     { href: "/admin/theme", label: "Theme", description: "Colors and branding", icon: "🎨" },
   ];
 
-  function CardGrid({ links }: { links: typeof contentLinks }) {
+  type CardLink = { href: string; label: string; description: string; count?: number; icon: string };
+  function CardGrid({ links }: { links: CardLink[] }) {
     return (
       <div className="grid gap-3 sm:grid-cols-2">
         {links.map(({ href, label, description, count, icon }) => (
