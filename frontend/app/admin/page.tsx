@@ -28,8 +28,14 @@ export default function AdminPage() {
     api.get<unknown[]>("/cms/jobs", { params: { limit: 500 } }).then((r) => setJobsCount(Array.isArray(r.data) ? r.data.length : 0)).catch(() => setJobsCount(0));
   }, []);
 
+  const [pagesCount, setPagesCount] = useState<number | null>(null);
+  useEffect(() => {
+    api.get<unknown[]>("/cms/pages", { params: { limit: 500 } }).then((r) => setPagesCount(Array.isArray(r.data) ? r.data.length : 0)).catch(() => setPagesCount(0));
+  }, []);
+
   const contentLinks = [
     { href: "/admin/homepage", label: "Homepage", description: "Edit sections and layout", count: undefined, icon: "🏠" },
+    { href: "/admin/pages", label: "Pages", description: "Create and edit pages (drag-and-drop)", count: pagesCount ?? undefined, icon: "📄" },
     { href: "/admin/services", label: "Services", description: "Manage service offerings", count: counts?.services, icon: "⚡" },
     { href: "/admin/blogs", label: "Blogs", description: "Blog posts", count: counts?.blogs, icon: "📝" },
     { href: "/admin/case-studies", label: "Case studies", description: "Work & portfolio", count: counts?.caseStudies, icon: "📂" },

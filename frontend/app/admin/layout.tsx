@@ -6,6 +6,7 @@ import Link from "next/link";
 
 const contentNav = [
   { href: "/admin/homepage", label: "Homepage" },
+  { href: "/admin/pages", label: "Pages" },
   { href: "/admin/services", label: "Services" },
   { href: "/admin/blogs", label: "Blogs" },
   { href: "/admin/case-studies", label: "Case studies" },
