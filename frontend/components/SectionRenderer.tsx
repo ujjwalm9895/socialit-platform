@@ -13,10 +13,19 @@ function HeroBlock({ data }: { data: Record<string, unknown> }) {
   const buttonText = (data.buttonText as string) || "";
   const buttonLink = (data.buttonLink as string) || "#";
   const badge = (data.badge as string) || "";
+  const textColor = (data.textColor as string) || "#FFFFFF";
+  const gradientTo = (data.gradientTo as string) || "";
+  const useCustomGradient = !!gradientTo;
+  const bgStyle = useCustomGradient
+    ? { background: `linear-gradient(to bottom right, var(--color-primary), ${gradientTo})` }
+    : undefined;
   return (
-    <section className="relative bg-gradient-to-br from-primary via-primary to-primary-dark text-white overflow-hidden">
+    <section
+      className={useCustomGradient ? "relative overflow-hidden" : "relative bg-gradient-to-br from-primary via-primary to-primary-dark overflow-hidden"}
+      style={bgStyle}
+    >
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(255,255,255,0.12),transparent)]" aria-hidden />
-      <div className={`relative ${sectionPadding} min-h-[60vh] flex flex-col justify-center`}>
+      <div className={`relative ${sectionPadding} min-h-[60vh] flex flex-col justify-center`} style={{ color: textColor }}>
         <div className={containerClass + " text-center"}>
           {badge && (
             <span className="inline-block text-primary-dark bg-white/95 text-sm font-semibold uppercase tracking-wider px-4 py-1.5 rounded-full mb-6 animate-fade-in-up" style={{ animationDelay: "0s" }}>
@@ -27,7 +36,7 @@ function HeroBlock({ data }: { data: Record<string, unknown> }) {
             {heading}
           </h1>
           {subheading && (
-            <p className="text-lg md:text-xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+            <p className="text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up opacity-90" style={{ animationDelay: "0.2s" }}>
               {subheading}
             </p>
           )}

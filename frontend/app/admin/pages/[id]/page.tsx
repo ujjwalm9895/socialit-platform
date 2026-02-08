@@ -22,6 +22,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import api from "../../../api-client";
 import type { Section } from "../../../../components/SectionRenderer";
+import SectionEditorModal from "../../components/SectionEditorModal";
 
 type PageRecord = {
   id: string;
@@ -119,7 +120,6 @@ export default function AdminPageEditorPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [editData, setEditData] = useState("");
   const [metaSaving, setMetaSaving] = useState(false);
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
@@ -218,20 +218,11 @@ export default function AdminPageEditorPage() {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  const openEdit = (index: number) => {
-    const section = page?.content?.[index];
-    setEditData(JSON.stringify(section?.data ?? {}, null, 2));
-    setEditIndex(index);
-  };
+  const openEdit = (index: number) => setEditIndex(index);
 
-  const applyEdit = () => {
+  const applyEdit = (data: Record<string, unknown>) => {
     if (editIndex === null || !page?.content) return;
-    try {
-      const data = JSON.parse(editData) as Record<string, unknown>;
-      updateSection(editIndex, data);
-    } catch {
-      setError("Invalid JSON");
-    }
+    updateSection(editIndex, data);
   };
 
   if (loading) {
@@ -368,34 +359,12 @@ export default function AdminPageEditorPage() {
         )}
       </div>
 
-      {editIndex !== null && (
-        <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[85vh] flex flex-col p-6">
-            <h2 className="font-semibold text-slate-900 mb-3">Edit section data (JSON)</h2>
-            <textarea
-              value={editData}
-              onChange={(e) => setEditData(e.target.value)}
-              className="flex-1 min-h-[240px] font-mono text-sm border border-slate-200 rounded-xl p-4 focus:ring-2 focus:ring-primary focus:border-primary"
-              spellCheck={false}
-            />
-            <div className="flex gap-3 mt-4">
-              <button
-                type="button"
-                onClick={applyEdit}
-                className="btn-flashy bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark"
-              >
-                Apply
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditIndex(null)}
-                className="bg-slate-100 text-slate-700 px-5 py-2.5 rounded-xl font-medium hover:bg-slate-200"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+      {editIndex !== null && page?.content?.[editIndex] && (
+        <SectionEditorModal
+          section={page.content[editIndex]}
+          onSave={applyEdit}
+          onClose={() => setEditIndex(null)}
+        />
       )}
     </div>
   );
