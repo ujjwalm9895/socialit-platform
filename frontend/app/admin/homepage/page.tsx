@@ -188,7 +188,7 @@ export default function HomepageBuilderPage() {
   };
 
   const sensors = useSensors(
-    useSensor(PointerSensor({ activationConstraint: { distance: 8 } })),
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
