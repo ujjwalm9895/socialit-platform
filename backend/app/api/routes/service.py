@@ -12,6 +12,7 @@ from app.api.services.service import (
     create_service,
     delete_service,
     get_service_by_id,
+    get_service_by_slug,
     list_services,
     update_service,
 )
@@ -116,6 +117,36 @@ async def list_services_endpoint(
     
     services = list_services(db=db, skip=skip, limit=limit, status=status)
     return services
+
+
+@router.get("/slug/{slug}", response_model=ServiceOut)
+async def get_service_by_slug_endpoint(
+    slug: str,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_user),
+):
+    """Get a single service by slug (full payload including content). Public for published only."""
+    try:
+        service = get_service_by_slug(db=db, slug=slug)
+
+        user_role_names = set()
+        if current_user:
+            user_role_names = {ur.role.name for ur in current_user.user_roles}
+
+        is_admin_or_editor = "admin" in user_role_names or "editor" in user_role_names
+
+        if not is_admin_or_editor and service.status != ContentStatus.PUBLISHED:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Service not found"
+            )
+
+        return service
+    except ServiceNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Service not found"
+        )
 
 
 @router.get("/{service_id}", response_model=ServiceOut)

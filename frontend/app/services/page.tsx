@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import PublicLayout from "../../components/PublicLayout";
-import AIMLSolutionsSection, { type AIMLSectionData } from "../../components/AIMLSolutionsSection";
 import api from "../api-client";
 
 type Service = { id: string; title: string; slug: string; subtitle?: string; description?: string; status?: string };
@@ -11,7 +10,6 @@ type Service = { id: string; title: string; slug: string; subtitle?: string; des
 export default function ServicesPage() {
   const [list, setList] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
-  const [aiMlSection, setAiMlSection] = useState<AIMLSectionData | null>(null);
 
   useEffect(() => {
     api
@@ -20,21 +18,12 @@ export default function ServicesPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => {
-    api
-      .get<AIMLSectionData>("/cms/site-settings/services-ai-ml-section")
-      .then((res) => setAiMlSection(res.data ?? null))
-      .catch(() => setAiMlSection(null));
-  }, []);
-
   const published = list.filter((s) => s.status === "published");
 
   return (
     <PublicLayout>
       <main className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Services</h1>
-
-        <AIMLSolutionsSection data={aiMlSection} />
 
         {loading ? (
           <div className="flex flex-col items-center gap-3 py-12 text-zensar-muted">

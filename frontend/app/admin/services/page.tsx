@@ -50,19 +50,6 @@ export default function AdminServicesPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-base font-semibold text-slate-900">Services page: AI & Machine Learning block</h2>
-          <p className="text-slate-500 text-sm mt-0.5">Standalone section on the public Services page. Edit title, overview, services, products, benefits, and CTA.</p>
-        </div>
-        <Link
-          href="/admin/services/ai-ml-section"
-          className="shrink-0 text-primary text-sm font-medium hover:underline"
-        >
-          Edit →
-        </Link>
-      </div>
-
       <h2 className="text-lg font-semibold text-slate-900">Service listings</h2>
       {list.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center">

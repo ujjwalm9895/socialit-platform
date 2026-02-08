@@ -6,7 +6,24 @@ import Link from "next/link";
 import PublicLayout from "../../../components/PublicLayout";
 import api from "../../api-client";
 
-type Service = { id: string; title: string; slug: string; subtitle?: string; description?: string; status?: string };
+type ContentItem = { title: string; description?: string };
+type ServiceContent = {
+  services_offered?: ContentItem[];
+  products?: ContentItem[];
+  benefits?: string[];
+  cta_text?: string;
+  cta_link?: string;
+};
+
+type Service = {
+  id: string;
+  title: string;
+  slug: string;
+  subtitle?: string;
+  description?: string;
+  content?: ServiceContent;
+  status?: string;
+};
 
 export default function ServiceDetailPage() {
   const params = useParams();
@@ -18,11 +35,14 @@ export default function ServiceDetailPage() {
   useEffect(() => {
     if (!slug) return;
     api
-      .get<Service[]>("/cms/services")
+      .get<Service>(`/cms/services/slug/${encodeURIComponent(slug)}`)
       .then((res) => {
-        const found = (res.data || []).find((s) => s.slug === slug && s.status === "published");
-        setService(found ?? null);
-        setNotFound(!found);
+        setService(res.data ?? null);
+        setNotFound(!res.data);
+      })
+      .catch(() => {
+        setService(null);
+        setNotFound(true);
       })
       .finally(() => setLoading(false));
   }, [slug]);
@@ -48,6 +68,13 @@ export default function ServiceDetailPage() {
     );
   }
 
+  const content = service.content;
+  const servicesOffered = Array.isArray(content?.services_offered) ? content.services_offered : [];
+  const products = Array.isArray(content?.products) ? content.products : [];
+  const benefits = Array.isArray(content?.benefits) ? content.benefits : [];
+  const ctaText = content?.cta_text || "Contact us";
+  const ctaLink = content?.cta_link || "/contact";
+
   return (
     <PublicLayout>
       <main className="max-w-3xl mx-auto px-4 py-12">
@@ -57,6 +84,56 @@ export default function ServiceDetailPage() {
         {service.description && (
           <div className="mt-6 prose prose-gray max-w-none">
             <p className="whitespace-pre-wrap text-gray-700">{service.description}</p>
+          </div>
+        )}
+
+        {servicesOffered.length > 0 && (
+          <>
+            <h2 className="text-lg font-semibold text-gray-900 mt-8 mb-3">Services Offered</h2>
+            <ul className="list-disc list-inside text-gray-600 text-sm space-y-1.5 mb-6">
+              {servicesOffered.map((s, i) => (
+                <li key={i}>
+                  {s.title && <strong className="text-gray-800">{s.title}</strong>}
+                  {s.description && <> — {s.description}</>}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+
+        {products.length > 0 && (
+          <>
+            <h2 className="text-lg font-semibold text-gray-900 mt-6 mb-3">AI Products</h2>
+            <ul className="list-disc list-inside text-gray-600 text-sm space-y-1.5 mb-6">
+              {products.map((p, i) => (
+                <li key={i}>
+                  {p.title && <strong className="text-gray-800">{p.title}</strong>}
+                  {p.description && <> — {p.description}</>}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+
+        {benefits.length > 0 && (
+          <>
+            <h2 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Business Benefits</h2>
+            <ul className="list-disc list-inside text-gray-600 text-sm space-y-1.5 mb-6">
+              {benefits.map((b, i) => (
+                <li key={i}>{b}</li>
+              ))}
+            </ul>
+          </>
+        )}
+
+        {(content?.cta_text || content?.cta_link) && (
+          <div className="mt-6 pt-4 border-t border-gray-200">
+            <Link
+              href={ctaLink}
+              className="btn-flashy inline-block bg-primary text-white px-6 py-3 rounded-xl font-medium hover:bg-primary-dark shadow-glow"
+            >
+              {ctaText}
+            </Link>
           </div>
         )}
       </main>
