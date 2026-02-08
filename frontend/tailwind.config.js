@@ -19,6 +19,24 @@ module.exports = {
           muted: "#5A6178",
         },
       },
+      animation: {
+        "fade-in-up": "fadeInUp 0.5s ease-out forwards",
+        "fade-in": "fadeIn 0.4s ease-out forwards",
+      },
+      keyframes: {
+        fadeInUp: {
+          "0%": { opacity: "0", transform: "translateY(16px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+      },
+      boxShadow: {
+        glow: "0 0 24px -4px rgba(0, 102, 179, 0.25)",
+        "glow-lg": "0 0 40px -8px rgba(0, 102, 179, 0.3)",
+      },
     },
   },
   plugins: [],

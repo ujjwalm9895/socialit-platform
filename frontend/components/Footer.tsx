@@ -32,7 +32,7 @@ export default function Footer({ config }: { config?: FooterConfig | null }) {
                     <Link
                       key={j}
                       href={link.href}
-                      className="text-sm hover:opacity-90 transition"
+                      className="link-underline text-sm hover:opacity-90 transition"
                       style={{ color: linkColor }}
                     >
                       {link.label}

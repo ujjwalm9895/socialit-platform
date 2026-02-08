@@ -43,8 +43,9 @@ export default function Home() {
   let content: React.ReactNode;
   if (loading) {
     content = (
-      <main className="min-h-[40vh] flex items-center justify-center">
-        <p className="text-gray-500">Loading...</p>
+      <main className="min-h-[40vh] flex flex-col items-center justify-center gap-3">
+        <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-zensar-muted">Loading...</p>
       </main>
     );
   } else if (error) {
@@ -69,7 +70,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => fetchHome()}
-          className="text-primary hover:underline font-medium"
+          className="btn-flashy rounded-xl bg-primary px-5 py-2.5 text-white font-medium hover:bg-primary-dark"
         >
           Retry
         </button>
@@ -77,10 +78,10 @@ export default function Home() {
     );
   } else if (!page || !page.content?.length) {
     content = (
-      <main className="min-h-[40vh] flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold text-gray-800">Welcome</h1>
-        <p className="text-gray-600">No content yet. Build your homepage in the admin.</p>
-        <a href="/admin/login" className="text-primary hover:underline font-medium">
+      <main className="min-h-[40vh] flex flex-col items-center justify-center gap-5 px-4">
+        <h1 className="text-2xl font-bold text-zensar-dark">Welcome</h1>
+        <p className="text-zensar-muted text-center">No content yet. Build your homepage in the admin.</p>
+        <a href="/admin/login" className="btn-flashy inline-block rounded-xl bg-primary px-6 py-3 text-white font-medium hover:bg-primary-dark">
           Go to Admin →
         </a>
       </main>

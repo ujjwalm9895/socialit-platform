@@ -79,7 +79,7 @@ export default function AIMLSolutionsSection({ data }: Props) {
       <div className="mt-6 pt-4 border-t border-gray-200">
         <Link
           href={ctaLink}
-          className="inline-block bg-primary text-white px-5 py-2.5 rounded-lg font-medium hover:bg-primary-dark transition-colors"
+          className="btn-flashy inline-block bg-primary text-white px-6 py-3 rounded-xl font-medium hover:bg-primary-dark shadow-glow"
         >
           {ctaText}
         </Link>

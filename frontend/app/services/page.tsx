@@ -37,17 +37,27 @@ export default function ServicesPage() {
         <AIMLSolutionsSection data={aiMlSection} />
 
         {loading ? (
-          <p className="text-gray-500">Loading...</p>
+          <div className="flex flex-col items-center gap-3 py-12 text-zensar-muted">
+            <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <p>Loading services...</p>
+          </div>
         ) : published.length === 0 ? (
-          <p className="text-gray-500">No services yet.</p>
+          <div className="text-center py-12 px-4 rounded-2xl bg-zensar-surface border border-gray-200">
+            <p className="text-zensar-muted">No services published yet. Check back soon.</p>
+          </div>
         ) : (
-          <ul className="space-y-6">
-            {published.map((s) => (
-              <li key={s.id} className="border border-gray-200 rounded-lg p-4 hover:border-primary/40 transition">
-                <Link href={`/services/${s.slug}`} className="block">
-                  <h2 className="text-xl font-semibold text-gray-900 hover:text-primary">{s.title}</h2>
+          <ul className="space-y-4">
+            {published.map((s, i) => (
+              <li
+                key={s.id}
+                className="hover-lift border border-gray-200 rounded-xl p-5 bg-white shadow-sm"
+                style={{ animationDelay: `${i * 0.03}s` }}
+              >
+                <Link href={`/services/${s.slug}`} className="block group">
+                  <h2 className="text-xl font-semibold text-gray-900 group-hover:text-primary transition-colors">{s.title}</h2>
                   {s.subtitle && <p className="text-gray-600 text-sm mt-1">{s.subtitle}</p>}
                   {s.description && <p className="text-gray-500 text-sm mt-2 line-clamp-2">{s.description}</p>}
+                  <span className="inline-block mt-2 text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">Read more →</span>
                 </Link>
               </li>
             ))}

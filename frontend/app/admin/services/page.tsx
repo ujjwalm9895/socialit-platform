@@ -44,7 +44,7 @@ export default function AdminServicesPage() {
         </div>
         <Link
           href="/admin/services/new"
-          className="shrink-0 inline-flex items-center justify-center bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark transition-colors"
+          className="btn-flashy shrink-0 inline-flex items-center justify-center bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark"
         >
           New service
         </Link>
@@ -77,7 +77,7 @@ export default function AdminServicesPage() {
             <li key={s.id}>
               <Link
                 href={`/admin/services/${s.id}`}
-                className="flex items-center justify-between gap-4 p-4 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-primary/40 hover:shadow-md transition-all"
+                className="hover-lift flex items-center justify-between gap-4 p-4 bg-white rounded-xl border border-slate-200 shadow-sm"
               >
                 <div className="min-w-0">
                   <span className="font-medium text-slate-900">{s.title}</span>

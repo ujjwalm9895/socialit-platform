@@ -23,7 +23,7 @@ export default function Header({ config }: { config?: HeaderConfig | null }) {
 
   return (
     <header
-      className="border-b border-gray-200 z-10"
+      className="border-b border-gray-200 z-10 shadow-sm"
       style={{
         backgroundColor: bg,
         color: textColor,
@@ -52,7 +52,7 @@ export default function Header({ config }: { config?: HeaderConfig | null }) {
                 <Link
                   key={i}
                   href={item.href ?? "#"}
-                  className="text-sm font-medium hover:opacity-90 transition"
+                  className="link-underline text-sm font-medium hover:opacity-90 transition"
                   style={{ color: textColor ?? undefined }}
                   target={openInNewTab ? "_blank" : undefined}
                   rel={openInNewTab ? "noopener noreferrer" : undefined}
@@ -64,7 +64,7 @@ export default function Header({ config }: { config?: HeaderConfig | null }) {
             {cta?.enabled !== false && cta?.text && (
               <Link
                 href={cta.href ?? "/contact"}
-                className="text-sm font-medium px-4 py-2 rounded-lg transition"
+                className="btn-flashy text-sm font-medium px-5 py-2.5 rounded-xl transition"
                 style={{
                   backgroundColor: cta.color ?? "var(--color-primary)",
                   color: "#fff",

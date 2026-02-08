@@ -37,14 +37,14 @@ export default function AdminPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-        <p className="text-slate-500 text-sm mt-1">Manage your site content and settings.</p>
+        <p className="text-slate-500 text-sm mt-1">Welcome back. Manage your site content and settings from the cards below.</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         {links.map(({ href, label, count, description, icon }) => (
           <Link
             key={href}
             href={href}
-            className="block p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-primary/40 hover:shadow-md transition-all"
+            className="hover-lift block p-5 bg-white rounded-2xl border border-slate-200 shadow-sm"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">

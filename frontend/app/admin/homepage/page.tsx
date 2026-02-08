@@ -262,7 +262,7 @@ export default function HomepageBuilderPage() {
           type="button"
           onClick={save}
           disabled={saving}
-          className="shrink-0 bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark disabled:opacity-50 transition-colors"
+          className="btn-flashy shrink-0 bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark disabled:opacity-50 disabled:transform-none transition-colors"
         >
           {saving ? "Saving..." : "Save changes"}
         </button>
@@ -330,7 +330,7 @@ export default function HomepageBuilderPage() {
               <button
                 type="button"
                 onClick={applyEdit}
-                className="bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark"
+                className="btn-flashy bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark"
               >
                 Apply
               </button>
