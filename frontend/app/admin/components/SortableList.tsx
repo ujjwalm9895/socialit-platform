@@ -79,7 +79,7 @@ export function SortableItem<T>({
   );
 }
 
-export default function SortableList<T extends { id?: string }>({
+export default function SortableList<T>({
   items,
   setItems,
   getItemId,
