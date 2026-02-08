@@ -28,49 +28,58 @@ export default function AdminPage() {
     api.get<unknown[]>("/cms/jobs", { params: { limit: 500 } }).then((r) => setJobsCount(Array.isArray(r.data) ? r.data.length : 0)).catch(() => setJobsCount(0));
   }, []);
 
-  const links = [
-    { href: "/admin/homepage", label: "Homepage", description: "Edit homepage sections", icon: "🏠" },
-    { href: "/admin/services", label: "Services", count: counts?.services, description: "Manage services", icon: "⚡" },
-    { href: "/admin/blogs", label: "Blogs", count: counts?.blogs, description: "Manage blog posts", icon: "📝" },
-    { href: "/admin/case-studies", label: "Case studies", count: counts?.caseStudies, description: "Manage case studies (Work/Portfolio)", icon: "📂" },
-    { href: "/admin/careers", label: "Careers", count: jobsCount ?? undefined, description: "Manage job listings", icon: "💼" },
-    { href: "/admin/about", label: "About page", description: "About us content", icon: "ℹ️" },
-    { href: "/admin/contact", label: "Contact info", description: "Contact details for Contact page", icon: "✉️" },
-    { href: "/admin/header", label: "Header", description: "Site header & navigation", icon: "🔝" },
-    { href: "/admin/footer", label: "Footer", description: "Site footer", icon: "🔻" },
-    { href: "/admin/theme", label: "Theme", description: "Colors & branding", icon: "🎨" },
+  const contentLinks = [
+    { href: "/admin/homepage", label: "Homepage", description: "Edit sections and layout", count: undefined, icon: "🏠" },
+    { href: "/admin/services", label: "Services", description: "Manage service offerings", count: counts?.services, icon: "⚡" },
+    { href: "/admin/blogs", label: "Blogs", description: "Blog posts", count: counts?.blogs, icon: "📝" },
+    { href: "/admin/case-studies", label: "Case studies", description: "Work & portfolio", count: counts?.caseStudies, icon: "📂" },
+    { href: "/admin/careers", label: "Careers", description: "Job listings", count: jobsCount ?? undefined, icon: "💼" },
+  ];
+  const pageLinks = [
+    { href: "/admin/about", label: "About page", description: "Company story and team", icon: "ℹ️" },
+    { href: "/admin/contact", label: "Contact info", description: "Email, phone, address", icon: "✉️" },
+  ];
+  const siteLinks = [
+    { href: "/admin/header", label: "Header", description: "Logo and navigation", icon: "🔝" },
+    { href: "/admin/footer", label: "Footer", description: "Links and copyright", icon: "🔻" },
+    { href: "/admin/theme", label: "Theme", description: "Colors and branding", icon: "🎨" },
   ];
 
-  return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-        <p className="text-slate-500 text-sm mt-1">Welcome back. Manage your site content and settings from the cards below.</p>
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        {links.map(({ href, label, count, description, icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className="hover-lift block p-5 bg-white rounded-2xl border border-slate-200 shadow-sm"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl" aria-hidden>{icon}</span>
-                <div>
-                  <span className="font-semibold text-slate-900">{label}</span>
-                  {description && <p className="text-sm text-slate-500 mt-0.5">{description}</p>}
-                </div>
-              </div>
-              {count !== undefined && (
-                <span className="shrink-0 text-sm font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">
-                  {count} item{count !== 1 ? "s" : ""}
-                </span>
-              )}
+  function CardGrid({ links }: { links: typeof contentLinks }) {
+    return (
+      <div className="grid gap-3 sm:grid-cols-2">
+        {links.map(({ href, label, description, count, icon }) => (
+          <Link key={href} href={href} className="group flex items-start gap-4 p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-primary/30 hover:shadow-md transition-all">
+            <span className="flex items-center justify-center w-12 h-12 rounded-xl bg-slate-100 text-xl group-hover:bg-primary/10 transition-colors" aria-hidden>{icon}</span>
+            <div className="min-w-0 flex-1">
+              <span className="font-semibold text-slate-900 group-hover:text-primary transition-colors">{label}</span>
+              {description && <p className="text-sm text-slate-500 mt-0.5">{description}</p>}
             </div>
+            {count !== undefined && <span className="shrink-0 text-sm font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">{count}</span>}
           </Link>
         ))}
       </div>
+    );
+  }
+
+  return (
+    <div className="space-y-10">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
+        <p className="text-slate-500 mt-1">Manage your site content and settings. Choose a section below.</p>
+      </div>
+      <section>
+        <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Content</h2>
+        <CardGrid links={contentLinks} />
+      </section>
+      <section>
+        <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Pages</h2>
+        <CardGrid links={pageLinks} />
+      </section>
+      <section>
+        <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Site</h2>
+        <CardGrid links={siteLinks} />
+      </section>
     </div>
   );
 }

@@ -43,9 +43,14 @@ export default function Home() {
   let content: React.ReactNode;
   if (loading) {
     content = (
-      <main className="min-h-[40vh] flex flex-col items-center justify-center gap-3">
-        <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        <p className="text-zensar-muted">Loading...</p>
+      <main className="min-h-[50vh] flex flex-col items-center justify-center gap-6 px-4">
+        <div className="w-12 h-12 border-3 border-primary/30 border-t-primary rounded-full animate-spin" style={{ borderWidth: 3 }} />
+        <p className="text-zensar-muted font-medium">Loading your experience...</p>
+        <div className="flex gap-2">
+          <div className="w-2 h-2 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: "0ms" }} />
+          <div className="w-2 h-2 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: "150ms" }} />
+          <div className="w-2 h-2 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: "300ms" }} />
+        </div>
       </main>
     );
   } else if (error) {
@@ -78,12 +83,21 @@ export default function Home() {
     );
   } else if (!page || !page.content?.length) {
     content = (
-      <main className="min-h-[40vh] flex flex-col items-center justify-center gap-5 px-4">
-        <h1 className="text-2xl font-bold text-zensar-dark">Welcome</h1>
-        <p className="text-zensar-muted text-center">No content yet. Build your homepage in the admin.</p>
-        <a href="/admin/login" className="btn-flashy inline-block rounded-xl bg-primary px-6 py-3 text-white font-medium hover:bg-primary-dark">
-          Go to Admin →
-        </a>
+      <main className="min-h-[60vh] flex flex-col items-center justify-center gap-8 px-4 bg-zensar-surface">
+        <div className="max-w-md text-center">
+          <h1 className="text-3xl font-bold text-zensar-dark mb-3">Welcome to your site</h1>
+          <p className="text-zensar-muted text-lg leading-relaxed mb-8">
+            Your homepage is empty. Add sections from the admin to build a beautiful landing experience.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/admin/login" className="btn-flashy inline-flex items-center justify-center rounded-xl bg-primary px-8 py-4 text-white font-semibold shadow-glow hover:bg-primary-dark">
+              Go to Admin →
+            </a>
+            <a href="/services" className="inline-flex items-center justify-center rounded-xl border-2 border-gray-200 px-8 py-4 text-gray-700 font-medium hover:border-primary hover:text-primary transition-colors">
+              View Services
+            </a>
+          </div>
+        </div>
       </main>
     );
   } else {

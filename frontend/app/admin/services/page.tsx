@@ -29,8 +29,9 @@ export default function AdminServicesPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="text-slate-500">Loading services...</div>
+      <div className="flex flex-col items-center justify-center py-20 gap-3">
+        <div className="w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+        <p className="text-slate-500">Loading services…</p>
       </div>
     );
   }
@@ -40,31 +41,25 @@ export default function AdminServicesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Services</h1>
-          <p className="text-slate-500 text-sm mt-1">Manage your services. Publish to show on the site.</p>
+          <p className="text-slate-500 mt-1">Manage your services. Publish to show on the site.</p>
         </div>
-        <Link
-          href="/admin/services/new"
-          className="btn-flashy shrink-0 inline-flex items-center justify-center bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark"
-        >
+        <Link href="/admin/services/new" className="btn-flashy shrink-0 inline-flex items-center justify-center bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark">
           New service
         </Link>
       </div>
 
-      <h2 className="text-lg font-semibold text-slate-900">Service listings</h2>
       {list.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center">
-          <p className="text-slate-500">No services yet.</p>
-          <Link href="/admin/services/new" className="inline-block mt-3 text-primary font-medium hover:underline">
-            Create one
-          </Link>
+          <p className="text-slate-500 mb-4">No services yet. Create your first one to get started.</p>
+          <Link href="/admin/services/new" className="btn-flashy inline-flex items-center justify-center bg-primary text-white px-6 py-3 rounded-xl font-medium hover:bg-primary-dark">Create service</Link>
         </div>
       ) : (
-        <ul className="space-y-2">
+        <ul className="space-y-3">
           {list.map((s) => (
             <li key={s.id}>
               <Link
-                href={`/admin/services/${s.id}`}
-                className="hover-lift flex items-center justify-between gap-4 p-4 bg-white rounded-xl border border-slate-200 shadow-sm"
+                href={"/admin/services/" + s.id}
+                className="group flex items-center justify-between gap-4 p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-primary/30 hover:shadow-md transition-all"
               >
                 <div className="min-w-0">
                   <span className="font-medium text-slate-900">{s.title}</span>
@@ -73,7 +68,7 @@ export default function AdminServicesPage() {
                     {s.status}
                   </span>
                 </div>
-                <span className="text-primary text-sm font-medium shrink-0">Edit →</span>
+                <span className="text-primary text-sm font-medium shrink-0 group-hover:underline">Edit →</span>
               </Link>
             </li>
           ))}
