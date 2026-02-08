@@ -4,6 +4,7 @@ from app.db.base import Base
 
 from app.models.case_study import CaseStudy
 from app.models.blog import Blog
+from app.models.job import Job
 from app.models.enums import ContentStatus, ContentStatusEnum
 from app.models.page import Page
 from app.models.permission import Permission

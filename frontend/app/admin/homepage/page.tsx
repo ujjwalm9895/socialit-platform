@@ -34,10 +34,12 @@ const SECTION_DEFAULTS: Record<string, Record<string, unknown>> = {
   text: { content: "Add your text content here." },
   image: { url: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800", alt: "Image" },
   features: { title: "Features", items: ["Feature one", "Feature two", "Feature three"] },
+  stats: { title: "Let's talk numbers", subtext: "Our journey so far.", items: [{ value: "150+", label: "Happy Clients" }, { value: "20K+", label: "Unique Designs" }, { value: "8+", label: "Years Experience" }, { value: "20+", label: "States Served" }] },
+  testimonials: { title: "What Our Clients Say", items: [{ quote: "Great partnership.", author: "Client Name", role: "CEO", company: "Company" }] },
   cta: { heading: "Get in touch", subtext: "We'd love to hear from you.", buttonText: "Contact", buttonLink: "#" },
 };
 
-const SECTION_TYPES = ["hero", "text", "image", "features", "cta"] as const;
+const SECTION_TYPES = ["hero", "text", "image", "features", "stats", "testimonials", "cta"] as const;
 
 function SectionCard({
   id,

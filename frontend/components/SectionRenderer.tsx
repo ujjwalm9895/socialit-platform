@@ -103,12 +103,66 @@ function CtaBlock({ data }: { data: Record<string, unknown> }) {
   );
 }
 
+function StatsBlock({ data }: { data: Record<string, unknown> }) {
+  const title = (data.title as string) || "Let's talk numbers";
+  const subtext = (data.subtext as string) || "";
+  const items = (data.items as Array<{ value?: string; label?: string }>) || [];
+  return (
+    <section className="py-16 px-4 bg-zensar-surface">
+      <div className="max-w-4xl mx-auto text-center">
+        <h2 className="text-3xl font-bold text-zensar-dark mb-2">{title}</h2>
+        {subtext && <p className="text-zensar-muted mb-10">{subtext}</p>}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {items.map((item, i) => (
+            <div key={i} className="hover-lift bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+              <div className="text-2xl md:text-3xl font-bold text-primary">{item.value ?? ""}</div>
+              <div className="text-sm text-gray-600 mt-1">{item.label ?? ""}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TestimonialsBlock({ data }: { data: Record<string, unknown> }) {
+  const title = (data.title as string) || "What Our Clients Say";
+  const items = (data.items as Array<{ quote?: string; author?: string; role?: string; company?: string; image_url?: string }>) || [];
+  return (
+    <section className="py-20 px-4 bg-white">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-3xl font-bold text-zensar-dark mb-10 text-center">{title}</h2>
+        <ul className="space-y-8">
+          {items.map((item, i) => (
+            <li key={i} className="hover-lift border border-gray-200 rounded-xl p-6 bg-zensar-surface/50">
+              <p className="text-gray-700 italic mb-4">&ldquo;{item.quote ?? ""}&rdquo;</p>
+              <div className="flex items-center gap-3">
+                {item.image_url && (
+                  <img src={item.image_url} alt="" className="w-12 h-12 rounded-full object-cover" />
+                )}
+                <div>
+                  <p className="font-semibold text-zensar-dark">{item.author ?? ""}</p>
+                  {(item.role || item.company) && (
+                    <p className="text-sm text-gray-500">{[item.role, item.company].filter(Boolean).join(" · ")}</p>
+                  )}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 const BLOCKS: Record<string, React.FC<{ data: Record<string, unknown> }>> = {
   hero: HeroBlock,
   text: TextBlock,
   image: ImageBlock,
   features: FeaturesBlock,
   cta: CtaBlock,
+  stats: StatsBlock,
+  testimonials: TestimonialsBlock,
 };
 
 export default function SectionRenderer({ section }: { section: Section }) {

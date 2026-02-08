@@ -23,11 +23,19 @@ export default function AdminPage() {
       .catch(() => setCounts({ services: 0, blogs: 0, caseStudies: 0 }));
   }, []);
 
+  const [jobsCount, setJobsCount] = useState<number | null>(null);
+  useEffect(() => {
+    api.get<unknown[]>("/cms/jobs", { params: { limit: 500 } }).then((r) => setJobsCount(Array.isArray(r.data) ? r.data.length : 0)).catch(() => setJobsCount(0));
+  }, []);
+
   const links = [
     { href: "/admin/homepage", label: "Homepage", description: "Edit homepage sections", icon: "🏠" },
     { href: "/admin/services", label: "Services", count: counts?.services, description: "Manage services", icon: "⚡" },
     { href: "/admin/blogs", label: "Blogs", count: counts?.blogs, description: "Manage blog posts", icon: "📝" },
-    { href: "/admin/case-studies", label: "Case studies", count: counts?.caseStudies, description: "Manage case studies", icon: "📂" },
+    { href: "/admin/case-studies", label: "Case studies", count: counts?.caseStudies, description: "Manage case studies (Work/Portfolio)", icon: "📂" },
+    { href: "/admin/careers", label: "Careers", count: jobsCount ?? undefined, description: "Manage job listings", icon: "💼" },
+    { href: "/admin/about", label: "About page", description: "About us content", icon: "ℹ️" },
+    { href: "/admin/contact", label: "Contact info", description: "Contact details for Contact page", icon: "✉️" },
     { href: "/admin/header", label: "Header", description: "Site header & navigation", icon: "🔝" },
     { href: "/admin/footer", label: "Footer", description: "Site footer", icon: "🔻" },
     { href: "/admin/theme", label: "Theme", description: "Colors & branding", icon: "🎨" },

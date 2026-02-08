@@ -281,6 +281,10 @@ def create_app() -> FastAPI:
     app.include_router(case_study_router)
     logger.info("CMS case study router registered")
     
+    from app.api.routes.job import router as job_router
+    app.include_router(job_router)
+    logger.info("CMS job router registered")
+    
     from app.api.routes.user import router as user_router
     app.include_router(user_router)
     logger.info("CMS user router registered")

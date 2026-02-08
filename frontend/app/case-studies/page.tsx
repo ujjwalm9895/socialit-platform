@@ -5,11 +5,12 @@ import Link from "next/link";
 import PublicLayout from "../../components/PublicLayout";
 import api from "../api-client";
 
-type CaseStudy = { id: string; title: string; slug: string; excerpt?: string; client_name?: string; status?: string };
+type CaseStudy = { id: string; title: string; slug: string; excerpt?: string; client_name?: string; industry?: string; status?: string };
 
 export default function CaseStudiesPage() {
   const [list, setList] = useState<CaseStudy[]>([]);
   const [loading, setLoading] = useState(true);
+  const [industryFilter, setIndustryFilter] = useState<string>("all");
 
   useEffect(() => {
     api
@@ -19,23 +20,34 @@ export default function CaseStudiesPage() {
   }, []);
 
   const published = list.filter((c) => c.status === "published");
+  const industries = Array.from(new Set(published.map((c) => c.industry).filter(Boolean))) as string[];
+  const filtered = industryFilter === "all" ? published : published.filter((c) => c.industry === industryFilter);
 
   return (
     <PublicLayout>
       <main className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Case Studies</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Case Studies</h1>
+        <p className="text-zensar-muted mb-8">Our work across industries.</p>
+        {industries.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-8">
+            <button type="button" onClick={() => setIndustryFilter("all")} className={`px-4 py-2 rounded-xl text-sm font-medium ${industryFilter === "all" ? "bg-primary text-white" : "bg-zensar-surface text-gray-600 hover:bg-gray-200"}`}>All</button>
+            {industries.map((ind) => (
+              <button key={ind} type="button" onClick={() => setIndustryFilter(ind)} className={`px-4 py-2 rounded-xl text-sm font-medium ${industryFilter === ind ? "bg-primary text-white" : "bg-zensar-surface text-gray-600 hover:bg-gray-200"}`}>{ind}</button>
+            ))}
+          </div>
+        )}
         {loading ? (
           <div className="flex flex-col items-center gap-3 py-12 text-zensar-muted">
             <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             <p>Loading case studies...</p>
           </div>
-        ) : published.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <div className="text-center py-12 px-4 rounded-2xl bg-zensar-surface border border-gray-200">
-            <p className="text-zensar-muted">No case studies yet. Check back soon.</p>
+            <p className="text-zensar-muted">{published.length === 0 ? "No case studies yet. Check back soon." : "No case studies in this category."}</p>
           </div>
         ) : (
           <ul className="space-y-4">
-            {published.map((c, i) => (
+            {filtered.map((c) => (
               <li key={c.id} className="hover-lift border border-gray-200 rounded-xl p-5 bg-white shadow-sm">
                 <Link href={`/case-studies/${c.slug}`} className="block group">
                   <h2 className="text-xl font-semibold text-gray-900 group-hover:text-primary transition-colors">{c.title}</h2>

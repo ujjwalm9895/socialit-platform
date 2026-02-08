@@ -1,5 +1,8 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
+
+if TYPE_CHECKING:
+    from app.models.job import Job
 
 from sqlalchemy import Boolean, DateTime, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -156,6 +159,27 @@ class User(BaseModel):
     published_case_studies: Mapped[List["CaseStudy"]] = relationship(
         "CaseStudy",
         foreign_keys="CaseStudy.published_by",
+        back_populates="publisher",
+        lazy="dynamic"
+    )
+
+    created_jobs: Mapped[List["Job"]] = relationship(
+        "Job",
+        foreign_keys="Job.created_by",
+        back_populates="creator",
+        lazy="dynamic"
+    )
+
+    updated_jobs: Mapped[List["Job"]] = relationship(
+        "Job",
+        foreign_keys="Job.updated_by",
+        back_populates="updater",
+        lazy="dynamic"
+    )
+
+    published_jobs: Mapped[List["Job"]] = relationship(
+        "Job",
+        foreign_keys="Job.published_by",
         back_populates="publisher",
         lazy="dynamic"
     )

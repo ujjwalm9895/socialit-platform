@@ -36,13 +36,16 @@ export default function Header({ config }: { config?: HeaderConfig | null }) {
         <div className="flex justify-between items-center">
           <Link
             href={logoLink}
-            className="text-xl font-bold transition hover:opacity-90"
+            className="flex flex-col transition hover:opacity-90"
             style={{ color: textColor ?? undefined }}
           >
             {logo?.image_url ? (
               <img src={logo.image_url} alt={logoText} className="h-8 w-auto" />
             ) : (
-              logoText
+              <span className="text-xl font-bold">{logoText}</span>
+            )}
+            {logo?.subtext && (
+              <span className="text-xs font-normal opacity-90" style={{ color: textColor ?? undefined }}>{logo.subtext}</span>
             )}
           </Link>
           <nav className="flex items-center gap-6">
