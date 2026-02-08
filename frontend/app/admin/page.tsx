@@ -24,35 +24,42 @@ export default function AdminPage() {
   }, []);
 
   const links = [
-    { href: "/admin/homepage", label: "Homepage", description: "Edit homepage sections" },
-    { href: "/admin/services", label: "Services", count: counts?.services, description: "Manage services" },
-    { href: "/admin/blogs", label: "Blogs", count: counts?.blogs, description: "Manage blog posts" },
-    { href: "/admin/case-studies", label: "Case studies", count: counts?.caseStudies, description: "Manage case studies" },
-    { href: "/admin/header", label: "Header", description: "Site header & navigation" },
-    { href: "/admin/footer", label: "Footer", description: "Site footer" },
-    { href: "/admin/theme", label: "Theme", description: "Colors & branding" },
+    { href: "/admin/homepage", label: "Homepage", description: "Edit homepage sections", icon: "🏠" },
+    { href: "/admin/services", label: "Services", count: counts?.services, description: "Manage services", icon: "⚡" },
+    { href: "/admin/blogs", label: "Blogs", count: counts?.blogs, description: "Manage blog posts", icon: "📝" },
+    { href: "/admin/case-studies", label: "Case studies", count: counts?.caseStudies, description: "Manage case studies", icon: "📂" },
+    { href: "/admin/header", label: "Header", description: "Site header & navigation", icon: "🔝" },
+    { href: "/admin/footer", label: "Footer", description: "Site footer", icon: "🔻" },
+    { href: "/admin/theme", label: "Theme", description: "Colors & branding", icon: "🎨" },
   ];
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Admin</h1>
-        <p className="text-gray-500 text-sm mt-1">Manage your site content and settings.</p>
+        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
+        <p className="text-slate-500 text-sm mt-1">Manage your site content and settings.</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        {links.map(({ href, label, count, description }) => (
+        {links.map(({ href, label, count, description, icon }) => (
           <Link
             key={href}
             href={href}
-            className="block p-4 bg-white border border-gray-200 rounded-lg hover:border-indigo-200 hover:shadow-sm transition"
+            className="block p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all"
           >
-            <div className="flex items-center justify-between">
-              <span className="font-medium text-gray-900">{label}</span>
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl" aria-hidden>{icon}</span>
+                <div>
+                  <span className="font-semibold text-slate-900">{label}</span>
+                  {description && <p className="text-sm text-slate-500 mt-0.5">{description}</p>}
+                </div>
+              </div>
               {count !== undefined && (
-                <span className="text-sm text-gray-500">{count} item{count !== 1 ? "s" : ""}</span>
+                <span className="shrink-0 text-sm font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">
+                  {count} item{count !== 1 ? "s" : ""}
+                </span>
               )}
             </div>
-            {description && <p className="text-sm text-gray-500 mt-1">{description}</p>}
           </Link>
         ))}
       </div>

@@ -78,47 +78,55 @@ export default function EditCaseStudyPage() {
       });
   };
 
-  if (loading) return <p className="text-gray-500">Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="text-slate-500">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/admin/case-studies" className="text-gray-600 hover:text-gray-900 text-sm">← Case studies</Link>
-        <h1 className="text-2xl font-bold text-gray-900">Edit case study</h1>
+        <Link href="/admin/case-studies" className="text-slate-600 hover:text-slate-900 text-sm font-medium">← Case studies</Link>
+        <h1 className="text-2xl font-bold text-slate-900">Edit case study</h1>
       </div>
-      <form onSubmit={save} className="space-y-4 max-w-xl">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2" required />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Slug *</label>
-          <input value={slug} onChange={(e) => setSlug(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2" required />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Client name</label>
-          <input value={clientName} onChange={(e) => setClientName(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Excerpt</label>
-          <textarea value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={2} className="w-full border border-gray-300 rounded-lg px-3 py-2" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-          <select value={status} onChange={(e) => setStatus(e.target.value as "draft" | "published")} className="border border-gray-300 rounded-lg px-3 py-2">
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-          </select>
-        </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <div className="flex gap-3 flex-wrap">
-          <button type="submit" disabled={saving} className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-sm font-medium">
-            {saving ? "Saving..." : "Save"}
-          </button>
-          <Link href="/admin/case-studies" className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Cancel</Link>
-          <button type="button" onClick={deleteCaseStudy} disabled={deleting} className="px-4 py-2 border border-red-300 text-red-700 rounded-lg text-sm hover:bg-red-50 disabled:opacity-50">
-            {deleting ? "Deleting..." : "Delete"}
-          </button>
+      <form onSubmit={save} className="max-w-xl">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Title *</label>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500" required />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Slug *</label>
+            <input value={slug} onChange={(e) => setSlug(e.target.value)} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500" required />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Client name</label>
+            <input value={clientName} onChange={(e) => setClientName(e.target.value)} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Excerpt</label>
+            <textarea value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={2} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+            <select value={status} onChange={(e) => setStatus(e.target.value as "draft" | "published")} className="border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+          {error && <p className="text-sm text-red-600">{error}</p>}
+          <div className="flex gap-3 flex-wrap pt-2">
+            <button type="submit" disabled={saving} className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50">
+              {saving ? "Saving..." : "Save"}
+            </button>
+            <Link href="/admin/case-studies" className="px-5 py-2.5 border border-slate-200 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Cancel</Link>
+            <button type="button" onClick={deleteCaseStudy} disabled={deleting} className="px-5 py-2.5 border border-red-200 text-red-700 rounded-xl font-medium hover:bg-red-50 disabled:opacity-50">
+              {deleting ? "Deleting..." : "Delete"}
+            </button>
+          </div>
         </div>
       </form>
     </div>

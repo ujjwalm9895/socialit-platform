@@ -48,29 +48,39 @@ export default function AdminHeaderPage() {
     }
   };
 
-  if (loading) return <p className="text-gray-500">Loading header...</p>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="text-slate-500">Loading header...</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-gray-900">Header</h1>
-      <p className="text-sm text-gray-500">Edit header config (JSON). Includes logo, menu_items, cta_button, styling.</p>
-      <textarea
-        value={json}
-        onChange={(e) => setJson(e.target.value)}
-        className="w-full h-96 font-mono text-sm border border-gray-300 rounded-lg p-3"
-        spellCheck={false}
-      />
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={save}
-          disabled={saving}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-sm font-medium"
-        >
-          {saving ? "Saving..." : "Save"}
-        </button>
-        {saved && <span className="text-sm text-green-600">Saved.</span>}
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900">Header</h1>
+        <p className="text-slate-500 text-sm mt-1">Edit header config (JSON). Logo, menu_items, cta_button, styling.</p>
+      </div>
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <textarea
+          value={json}
+          onChange={(e) => setJson(e.target.value)}
+          className="w-full h-96 font-mono text-sm border border-slate-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          spellCheck={false}
+        />
+        {error && <p className="text-sm text-red-600 mt-3">{error}</p>}
+        <div className="flex items-center gap-3 mt-4">
+          <button
+            type="button"
+            onClick={save}
+            disabled={saving}
+            className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+          >
+            {saving ? "Saving..." : "Save"}
+          </button>
+          {saved && <span className="text-sm text-emerald-600 font-medium">Saved.</span>}
+        </div>
       </div>
     </div>
   );
