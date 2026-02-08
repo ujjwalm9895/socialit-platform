@@ -203,63 +203,34 @@ curl http://localhost:8000/health
 ### Step 3: Create a Service
 
 1. Navigate to: `http://localhost:3000/admin/services`
-2. Click "Add Service"
-3. Fill in the form:
-   - **Title**: "Web Development"
-   - **Slug**: "web-development" (auto-generated)
-   - **Subtitle**: "Custom web solutions"
-   - **Description**: "We build modern web applications"
-   - **Status**: "Published"
-4. Click "Save"
-5. Verify the service appears in the list
+2. Click **"New service"**
+3. Fill in: **Title** (e.g. "Web Development"), **Slug** (e.g. "web-development"), **Subtitle**, **Description**, **Status** (Published)
+4. Click **"Create"**
+5. Verify the service appears in the list and on the public `/services` page
 
-### Step 4: Create a Page with Page Builder
+### Step 4: Edit Homepage with Page Builder
 
-1. Navigate to: `http://localhost:3000/admin/pages`
-2. Click "Add Page"
-3. Fill in basic info:
-   - **Title**: "Home"
-   - **Slug**: "home"
-   - **Status**: "Published"
-4. Add sections:
-   - Click **"+ Hero"** button
-   - In JSON Data textarea, enter:
-     ```json
-     {
-       "heading": "Welcome to Social IT",
-       "subheading": "We build amazing digital solutions",
-       "buttonText": "Get Started",
-       "buttonLink": "/contact"
-     }
-     ```
-   - Click **"+ Text"** button
-   - In JSON Data textarea, enter:
-     ```json
-     {
-       "content": "We are a leading digital services company specializing in web development, mobile apps, and cloud solutions."
-     }
-     ```
-   - Click **"+ Image"** button
-   - In JSON Data textarea, enter:
-     ```json
-     {
-       "url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f",
-       "alt": "Team collaboration"
-     }
-     ```
-5. Click "Save"
-6. Verify the page appears in the list
+1. Navigate to: `http://localhost:3000/admin/homepage`
+2. If no home page exists, click **"Create home page"**
+3. Add sections: click **"Add section"** and choose Hero, Text, Image, Features, or CTA
+4. For each section, click **"Edit"** to open the JSON modal and set data (e.g. heading, subheading, buttonLink)
+5. Reorder with Up/Down, remove with **"Remove"**
+6. Click **"Save"**
+7. Open `http://localhost:3000` to see the updated homepage
 
-### Step 5: View Public Page
+### Step 5: View Public Site
 
-1. Open browser: `http://localhost:3000/home`
-2. You should see:
-   - Hero section with heading, subheading, and button
-   - Text section with paragraph
-   - Image section with the image
-3. Check page source to verify SEO meta tags are present
+1. Open `http://localhost:3000` for the homepage
+2. Use **"View site"** in the admin header to open the public site in a new tab
+3. Check `/services`, `/blogs`, `/case-studies`, and `/contact`
 
-### Step 6: Test API Endpoints
+### Step 6: Admin Dashboard and Content
+
+- **Dashboard:** `http://localhost:3000/admin` shows links and counts for Services, Blogs, Case studies
+- **Header / Footer / Theme:** Edit at `/admin/header`, `/admin/footer`, `/admin/theme` (JSON editors)
+- **Blogs & Case studies:** Create and edit at `/admin/blogs` and `/admin/case-studies`
+
+### Step 7: Test API Endpoints
 
 **Login via API:**
 
@@ -299,7 +270,7 @@ curl http://localhost:8000/cms/services
 curl http://localhost:8000/cms/pages/slug/home
 ```
 
-### Step 7: Test Edit and Delete
+### Step 8: Test Edit and Delete
 
 1. Go to `http://localhost:3000/admin/services`
 2. Click **"Edit"** on any service
@@ -328,10 +299,14 @@ socialit-platform/
 │   └── .env
 ├── frontend/
 │   ├── app/
-│   │   ├── admin/         # Admin dashboard
-│   │   └── [slug]/        # Dynamic public pages
+│   │   ├── admin/         # Admin (dashboard, homepage, services, blogs, case-studies, header, footer, theme)
+│   │   ├── contact/      # Contact page
+│   │   ├── [slug]/       # Dynamic CMS pages
+│   │   ├── services/, blogs/, case-studies/
+│   │   └── not-found.tsx
+│   ├── components/       # Header, Footer, PublicLayout, SectionRenderer, SiteSettingsProvider
 │   ├── package.json
-│   └── .env.local
+│   └── .env.local        # NEXT_PUBLIC_API_URL
 └── README.md
 ```
 
@@ -385,15 +360,18 @@ Once backend is running, visit:
 - **Swagger UI**: `http://localhost:8000/docs`
 - **ReDoc**: `http://localhost:8000/redoc`
 
-## 🎯 Next Steps
+## 🚀 Deployment
 
-- [ ] Add Blog CMS module
-- [ ] Add Case Studies CMS module
-- [ ] Implement image upload
-- [ ] Add rich text editor for content
-- [ ] Add page preview functionality
-- [ ] Implement role management UI
-- [ ] Add user management UI
+- **Frontend (Vercel):** Set **Root Directory** to `frontend`. Add env `NEXT_PUBLIC_API_URL` (backend URL, no trailing slash). Redeploy after env changes.
+- **Backend:** Ensure `CORS_ORIGINS` includes your frontend URL (e.g. `https://your-app.vercel.app`).
+- See `render.yaml` and backend `Procfile` for backend hosting (e.g. Render).
+
+## 🎯 Optional Enhancements
+
+- Image upload for services, blogs, case studies
+- Rich text editor for blog/case study content
+- Page preview before publish
+- Role and user management UI in admin
 
 ## 📝 Notes
 
