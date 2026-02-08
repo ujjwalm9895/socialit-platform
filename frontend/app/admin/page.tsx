@@ -44,7 +44,7 @@ export default function AdminPage() {
           <Link
             key={href}
             href={href}
-            className="block p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all"
+            className="block p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-primary/40 hover:shadow-md transition-all"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">

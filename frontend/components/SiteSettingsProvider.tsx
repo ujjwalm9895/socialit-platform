@@ -17,18 +17,18 @@ export type FooterConfig = {
 };
 
 const DEFAULT_THEME: ThemeConfig = {
-  primary: "#6366f1",
-  secondary: "#8b5cf6",
-  accent: "#6366f1",
+  primary: "#0066B3",
+  secondary: "#004C8A",
+  accent: "#0066B3",
   background: "#ffffff",
-  surface: "#f9fafb",
-  text: "#111827",
-  textSecondary: "#6b7280",
-  border: "#e5e7eb",
-  success: "#10b981",
-  warning: "#f59e0b",
-  error: "#ef4444",
-  info: "#3b82f6",
+  surface: "#F5F7FA",
+  text: "#1A1A2E",
+  textSecondary: "#5A6178",
+  border: "#E2E8F0",
+  success: "#0D9488",
+  warning: "#D97706",
+  error: "#DC2626",
+  info: "#0066B3",
 };
 
 const THEME_KEYS = ["primary", "secondary", "accent", "background", "surface", "text", "textSecondary", "border", "success", "warning", "error", "info"];

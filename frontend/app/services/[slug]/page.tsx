@@ -42,7 +42,7 @@ export default function ServiceDetailPage() {
       <PublicLayout>
         <main className="min-h-[40vh] flex flex-col items-center justify-center gap-4">
           <h1 className="text-2xl font-bold text-gray-800">Service not found</h1>
-          <Link href="/services" className="text-indigo-600 hover:underline">Back to services</Link>
+          <Link href="/services" className="text-primary hover:underline">Back to services</Link>
         </main>
       </PublicLayout>
     );
@@ -51,7 +51,7 @@ export default function ServiceDetailPage() {
   return (
     <PublicLayout>
       <main className="max-w-3xl mx-auto px-4 py-12">
-        <Link href="/services" className="text-sm text-indigo-600 hover:underline mb-4 inline-block">← Services</Link>
+        <Link href="/services" className="text-sm text-primary hover:underline mb-4 inline-block">← Services</Link>
         <h1 className="text-3xl font-bold text-gray-900">{service.title}</h1>
         {service.subtitle && <p className="text-gray-600 mt-2">{service.subtitle}</p>}
         {service.description && (

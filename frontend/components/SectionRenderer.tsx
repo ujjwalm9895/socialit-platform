@@ -10,14 +10,14 @@ function HeroBlock({ data }: { data: Record<string, unknown> }) {
   const buttonText = (data.buttonText as string) || "";
   const buttonLink = (data.buttonLink as string) || "#";
   return (
-    <section className="bg-gradient-to-br from-indigo-600 to-purple-800 text-white py-20 px-4">
+    <section className="bg-gradient-to-br from-primary to-primary-dark text-white py-20 px-4">
       <div className="max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">{heading}</h1>
-        {subheading && <p className="text-xl text-indigo-100 mb-8">{subheading}</p>}
+        {subheading && <p className="text-xl text-white/90 mb-8">{subheading}</p>}
         {buttonText && (
           <a
             href={buttonLink}
-            className="inline-block bg-white text-indigo-700 font-semibold px-6 py-3 rounded-lg hover:bg-indigo-50 transition"
+            className="inline-block bg-white text-primary-dark font-semibold px-6 py-3 rounded-lg hover:bg-primary/10 transition"
           >
             {buttonText}
           </a>
@@ -76,13 +76,13 @@ function CtaBlock({ data }: { data: Record<string, unknown> }) {
   const buttonText = (data.buttonText as string) || "Contact";
   const buttonLink = (data.buttonLink as string) || "#";
   return (
-    <section className="py-16 px-4 bg-indigo-700 text-white">
+    <section className="py-16 px-4 bg-primary text-white">
       <div className="max-w-2xl mx-auto text-center">
         <h2 className="text-3xl font-bold mb-2">{heading}</h2>
-        {subtext && <p className="text-indigo-100 mb-6">{subtext}</p>}
+        {subtext && <p className="text-white/90 mb-6">{subtext}</p>}
         <a
           href={buttonLink}
-          className="inline-block bg-white text-indigo-700 font-semibold px-6 py-3 rounded-lg hover:bg-indigo-50 transition"
+          className="inline-block bg-white text-primary-dark font-semibold px-6 py-3 rounded-lg hover:bg-primary/10 transition"
         >
           {buttonText}
         </a>

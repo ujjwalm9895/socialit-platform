@@ -69,7 +69,7 @@ export default function AdminThemePage() {
         <textarea
           value={json}
           onChange={(e) => setJson(e.target.value)}
-          className="w-full h-64 font-mono text-sm border border-slate-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="w-full h-64 font-mono text-sm border border-slate-200 rounded-xl p-4 focus:ring-2 focus:ring-primary focus:border-primary"
           spellCheck={false}
         />
         {error && <p className="text-sm text-red-600 mt-3">{error}</p>}
@@ -78,7 +78,7 @@ export default function AdminThemePage() {
             type="button"
             onClick={save}
             disabled={saving}
-            className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            className="bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark disabled:opacity-50 transition-colors"
           >
             {saving ? "Saving..." : "Save"}
           </button>

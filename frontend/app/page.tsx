@@ -69,7 +69,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => fetchHome()}
-          className="text-indigo-600 hover:underline font-medium"
+          className="text-primary hover:underline font-medium"
         >
           Retry
         </button>
@@ -80,7 +80,7 @@ export default function Home() {
       <main className="min-h-[40vh] flex flex-col items-center justify-center gap-4">
         <h1 className="text-2xl font-bold text-gray-800">Welcome</h1>
         <p className="text-gray-600">No content yet. Build your homepage in the admin.</p>
-        <a href="/admin/login" className="text-indigo-600 hover:underline font-medium">
+        <a href="/admin/login" className="text-primary hover:underline font-medium">
           Go to Admin →
         </a>
       </main>

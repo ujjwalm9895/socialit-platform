@@ -69,7 +69,7 @@ function SectionCard({
       ref={setNodeRef}
       style={style}
       className={`bg-white rounded-xl border-2 transition-shadow flex items-center gap-4 p-4 ${
-        isDragging ? "border-indigo-400 shadow-lg z-10" : "border-slate-200 hover:border-slate-300"
+        isDragging ? "border-primary shadow-lg z-10" : "border-slate-200 hover:border-slate-300"
       }`}
     >
       <button
@@ -90,7 +90,7 @@ function SectionCard({
         <button
           type="button"
           onClick={onEdit}
-          className="px-3 py-1.5 text-sm font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+          className="px-3 py-1.5 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors"
         >
           Edit
         </button>
@@ -239,7 +239,7 @@ export default function HomepageBuilderPage() {
           type="button"
           onClick={createHomePage}
           disabled={creating}
-          className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+          className="bg-primary text-white px-6 py-3 rounded-xl font-medium hover:bg-primary-dark disabled:opacity-50 transition-colors"
         >
           {creating ? "Creating..." : "Create home page"}
         </button>
@@ -262,7 +262,7 @@ export default function HomepageBuilderPage() {
           type="button"
           onClick={save}
           disabled={saving}
-          className="shrink-0 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+          className="shrink-0 bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark disabled:opacity-50 transition-colors"
         >
           {saving ? "Saving..." : "Save changes"}
         </button>
@@ -282,7 +282,7 @@ export default function HomepageBuilderPage() {
               key={type}
               type="button"
               onClick={() => addSection(type)}
-              className="px-4 py-2 rounded-xl border-2 border-dashed border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50/50 transition-colors text-sm font-medium capitalize"
+              className="px-4 py-2 rounded-xl border-2 border-dashed border-slate-200 text-slate-600 hover:border-primary hover:text-primary hover:bg-primary/10 transition-colors text-sm font-medium capitalize"
             >
               + {type}
             </button>
@@ -323,14 +323,14 @@ export default function HomepageBuilderPage() {
             <textarea
               value={editData}
               onChange={(e) => setEditData(e.target.value)}
-              className="flex-1 min-h-[240px] font-mono text-sm border border-slate-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="flex-1 min-h-[240px] font-mono text-sm border border-slate-200 rounded-xl p-4 focus:ring-2 focus:ring-primary focus:border-primary"
               spellCheck={false}
             />
             <div className="flex gap-3 mt-4">
               <button
                 type="button"
                 onClick={applyEdit}
-                className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-indigo-700"
+                className="bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark"
               >
                 Apply
               </button>

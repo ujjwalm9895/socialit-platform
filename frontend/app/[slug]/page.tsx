@@ -50,7 +50,7 @@ export default function SlugPage() {
       <PublicLayout>
         <main className="min-h-[40vh] flex flex-col items-center justify-center gap-4">
           <h1 className="text-2xl font-bold text-gray-800">Page not found</h1>
-          <a href="/" className="text-indigo-600 hover:underline">Back to home</a>
+          <a href="/" className="text-primary hover:underline">Back to home</a>
         </main>
       </PublicLayout>
     );

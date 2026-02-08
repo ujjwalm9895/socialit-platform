@@ -42,7 +42,7 @@ export default function BlogDetailPage() {
       <PublicLayout>
         <main className="min-h-[40vh] flex flex-col items-center justify-center gap-4">
           <h1 className="text-2xl font-bold text-gray-800">Post not found</h1>
-          <Link href="/blogs" className="text-indigo-600 hover:underline">Back to blogs</Link>
+          <Link href="/blogs" className="text-primary hover:underline">Back to blogs</Link>
         </main>
       </PublicLayout>
     );
@@ -51,7 +51,7 @@ export default function BlogDetailPage() {
   return (
     <PublicLayout>
       <main className="max-w-3xl mx-auto px-4 py-12">
-        <Link href="/blogs" className="text-sm text-indigo-600 hover:underline mb-4 inline-block">← Blogs</Link>
+        <Link href="/blogs" className="text-sm text-primary hover:underline mb-4 inline-block">← Blogs</Link>
         <h1 className="text-3xl font-bold text-gray-900">{blog.title}</h1>
         {blog.excerpt && <p className="text-gray-600 mt-2">{blog.excerpt}</p>}
         {blog.content != null && blog.content !== "" && (

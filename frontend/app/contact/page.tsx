@@ -13,7 +13,7 @@ export default function ContactPage() {
         <div className="space-y-4 text-gray-700">
           <p>
             <strong>Email:</strong>{" "}
-            <a href="mailto:hello@socialit.com" className="text-indigo-600 hover:underline">
+            <a href="mailto:hello@socialit.com" className="text-primary hover:underline">
               hello@socialit.com
             </a>
           </p>

@@ -31,9 +31,9 @@ export default function BlogsPage() {
         ) : (
           <ul className="space-y-6">
             {published.map((b) => (
-              <li key={b.id} className="border border-gray-200 rounded-lg p-4 hover:border-indigo-200 transition">
+              <li key={b.id} className="border border-gray-200 rounded-lg p-4 hover:border-primary/40 transition">
                 <Link href={`/blogs/${b.slug}`} className="block">
-                  <h2 className="text-xl font-semibold text-gray-900 hover:text-indigo-600">{b.title}</h2>
+                  <h2 className="text-xl font-semibold text-gray-900 hover:text-primary">{b.title}</h2>
                   {b.excerpt && <p className="text-gray-500 text-sm mt-2 line-clamp-2">{b.excerpt}</p>}
                 </Link>
               </li>

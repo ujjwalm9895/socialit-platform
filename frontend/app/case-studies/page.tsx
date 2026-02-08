@@ -31,9 +31,9 @@ export default function CaseStudiesPage() {
         ) : (
           <ul className="space-y-6">
             {published.map((c) => (
-              <li key={c.id} className="border border-gray-200 rounded-lg p-4 hover:border-indigo-200 transition">
+              <li key={c.id} className="border border-gray-200 rounded-lg p-4 hover:border-primary/40 transition">
                 <Link href={`/case-studies/${c.slug}`} className="block">
-                  <h2 className="text-xl font-semibold text-gray-900 hover:text-indigo-600">{c.title}</h2>
+                  <h2 className="text-xl font-semibold text-gray-900 hover:text-primary">{c.title}</h2>
                   {c.client_name && <p className="text-gray-500 text-sm mt-1">Client: {c.client_name}</p>}
                   {c.excerpt && <p className="text-gray-500 text-sm mt-2 line-clamp-2">{c.excerpt}</p>}
                 </Link>

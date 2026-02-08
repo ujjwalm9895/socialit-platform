@@ -43,7 +43,7 @@ export default function AdminBlogsPage() {
         </div>
         <Link
           href="/admin/blogs/new"
-          className="shrink-0 inline-flex items-center justify-center bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
+          className="shrink-0 inline-flex items-center justify-center bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark transition-colors"
         >
           New blog
         </Link>
@@ -51,7 +51,7 @@ export default function AdminBlogsPage() {
       {list.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center">
           <p className="text-slate-500">No blogs yet.</p>
-          <Link href="/admin/blogs/new" className="inline-block mt-3 text-indigo-600 font-medium hover:underline">
+          <Link href="/admin/blogs/new" className="inline-block mt-3 text-primary font-medium hover:underline">
             Create one
           </Link>
         </div>
@@ -61,7 +61,7 @@ export default function AdminBlogsPage() {
             <li key={b.id}>
               <Link
                 href={`/admin/blogs/${b.id}`}
-                className="flex items-center justify-between gap-4 p-4 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all"
+                className="flex items-center justify-between gap-4 p-4 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-primary/40 hover:shadow-md transition-all"
               >
                 <div className="min-w-0">
                   <span className="font-medium text-slate-900">{b.title}</span>
@@ -70,7 +70,7 @@ export default function AdminBlogsPage() {
                     {b.status}
                   </span>
                 </div>
-                <span className="text-indigo-600 text-sm font-medium shrink-0">Edit →</span>
+                <span className="text-primary text-sm font-medium shrink-0">Edit →</span>
               </Link>
             </li>
           ))}

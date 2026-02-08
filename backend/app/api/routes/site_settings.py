@@ -15,6 +15,8 @@ from app.api.services.site_settings import (
     save_theme_config,
     get_ui_config,
     save_ui_config,
+    get_services_ai_ml_section,
+    save_services_ai_ml_section,
     SiteSettingsNotFoundError
 )
 from app.auth.dependencies import get_current_user
@@ -141,6 +143,33 @@ async def update_ui(
         )
     
     setting = save_ui_config(db, config)
+    return SiteSettingsOut(
+        key=setting.key,
+        value=setting.value,
+        description=setting.description
+    )
+
+
+@router.get("/services-ai-ml-section", response_model=Dict[str, Any])
+async def get_services_ai_ml_section_route(db: Session = Depends(get_db)):
+    """Get AI & ML solutions section config (public)."""
+    return get_services_ai_ml_section(db)
+
+
+@router.put("/services-ai-ml-section", response_model=SiteSettingsOut)
+async def update_services_ai_ml_section(
+    config: Dict[str, Any] = Body(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Update AI & ML solutions section (requires auth)."""
+    user_role_names = {ur.role.name for ur in current_user.user_roles}
+    if "admin" not in user_role_names and "editor" not in user_role_names:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin or Editor role required"
+        )
+    setting = save_services_ai_ml_section(db, config)
     return SiteSettingsOut(
         key=setting.key,
         value=setting.value,

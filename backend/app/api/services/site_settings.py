@@ -98,20 +98,20 @@ def save_footer_config(db: Session, config: Dict[str, Any]) -> SiteSettings:
 
 
 def get_theme_config(db: Session) -> Dict[str, Any]:
-    """Get theme configuration"""
+    """Get theme configuration (Zensar-style defaults)"""
     return get_setting_value(db, "theme", {
-        "primary": "#9333EA",
-        "secondary": "#EC4899",
-        "accent": "#8B5CF6",
+        "primary": "#0066B3",
+        "secondary": "#004C8A",
+        "accent": "#0066B3",
         "background": "#FFFFFF",
-        "surface": "#F9FAFB",
-        "text": "#111827",
-        "textSecondary": "#6B7280",
-        "border": "#E5E7EB",
-        "success": "#10B981",
-        "warning": "#F59E0B",
-        "error": "#EF4444",
-        "info": "#3B82F6",
+        "surface": "#F5F7FA",
+        "text": "#1A1A2E",
+        "textSecondary": "#5A6178",
+        "border": "#E2E8F0",
+        "success": "#0D9488",
+        "warning": "#D97706",
+        "error": "#DC2626",
+        "info": "#0066B3",
     })
 
 
@@ -159,3 +159,41 @@ def get_ui_config(db: Session) -> Dict[str, Any]:
 def save_ui_config(db: Session, config: Dict[str, Any]) -> SiteSettings:
     """Save UI settings configuration"""
     return set_setting(db, "ui", config, "UI settings configuration")
+
+
+def get_services_ai_ml_section(db: Session) -> Dict[str, Any]:
+    """Get AI & ML solutions section config (for services page)."""
+    return get_setting_value(db, "services_ai_ml_section", {
+        "enabled": True,
+        "title": "Artificial Intelligence & Machine Learning Solutions",
+        "overview": "We help enterprises harness the power of AI and machine learning to automate processes, gain insights from data, and deliver smarter products. Our team designs, builds, and deploys solutions tailored to your industry and goals.",
+        "services": [
+            {"title": "Custom Machine Learning Model Development", "description": "Bespoke models trained on your data for classification, regression, or clustering."},
+            {"title": "AI Chatbot & Virtual Assistant Development", "description": "Conversational agents for support, sales, and internal workflows."},
+            {"title": "Computer Vision Solutions", "description": "Image and video analysis, object detection, and quality inspection systems."},
+            {"title": "Predictive Analytics & Forecasting", "description": "Demand, risk, and performance forecasting using historical and real-time data."},
+            {"title": "Recommendation Engine Development", "description": "Personalised product, content, and next-best-action recommendations."},
+            {"title": "MLOps & Model Deployment Services", "description": "Pipelines, monitoring, and scalable deployment of models in production."},
+        ],
+        "products": [
+            {"title": "AI Business Analytics Dashboard", "description": "Unified view of KPIs with natural-language queries and automated insights."},
+            {"title": "No-Code AI Model Builder", "description": "Train and deploy simple models without writing code."},
+            {"title": "AI Image Analyzer Tool", "description": "Tagging, moderation, and extraction of metadata from images."},
+            {"title": "Website Chatbot Plugin", "description": "Drop-in chat widget with custom knowledge base and routing."},
+            {"title": "Resume Screening AI Tool", "description": "Shortlist candidates by skills, experience, and fit."},
+        ],
+        "benefits": [
+            "Higher efficiency through automation of repetitive and rule-based tasks.",
+            "Data-driven decisions with accurate forecasting and real-time analytics.",
+            "Improved customer experience via chatbots and personalised recommendations.",
+            "Faster time-to-market for AI features with MLOps and reusable components.",
+            "Scalable, secure deployment aligned with your infrastructure and compliance needs.",
+        ],
+        "cta_text": "Talk to Our AI Experts",
+        "cta_link": "/contact",
+    })
+
+
+def save_services_ai_ml_section(db: Session, config: Dict[str, Any]) -> SiteSettings:
+    """Save AI & ML solutions section config."""
+    return set_setting(db, "services_ai_ml_section", config, "Services page: AI & ML solutions section")
