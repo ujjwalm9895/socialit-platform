@@ -55,8 +55,8 @@ export default function AboutPage() {
 
   return (
     <PublicLayout>
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-3xl md:text-4xl font-bold text-zensar-dark mb-6">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-zensar-dark mb-6 break-words">
           {data?.heading || "About Us"}
         </h1>
         {data?.intro && (

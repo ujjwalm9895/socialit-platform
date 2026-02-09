@@ -48,9 +48,9 @@ export default function SlugPage() {
   if (notFound || !page) {
     return (
       <PublicLayout>
-        <main className="min-h-[40vh] flex flex-col items-center justify-center gap-4">
-          <h1 className="text-2xl font-bold text-gray-800">Page not found</h1>
-          <a href="/" className="text-primary hover:underline">Back to home</a>
+        <main className="min-h-[40vh] flex flex-col items-center justify-center gap-4 px-4">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 text-center">Page not found</h1>
+          <a href="/" className="text-primary hover:underline min-h-[44px] flex items-center">Back to home</a>
         </main>
       </PublicLayout>
     );

@@ -34,17 +34,17 @@ export default function CareersPage() {
 
   return (
     <PublicLayout>
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold text-zensar-dark mb-2">Careers</h1>
-        <p className="text-zensar-muted mb-8">Join our team. Open roles are listed below.</p>
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-zensar-dark mb-2">Careers</h1>
+        <p className="text-zensar-muted mb-6 sm:mb-8">Join our team. Open roles are listed below.</p>
 
-        <div className="flex gap-2 mb-8">
+        <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
           {(["all", "internship", "permanent"] as const).map((f) => (
             <button
               key={f}
               type="button"
               onClick={() => setFilter(f)}
-              className={filter === f ? "px-4 py-2 rounded-xl font-medium text-sm bg-primary text-white" : "px-4 py-2 rounded-xl font-medium text-sm bg-zensar-surface text-gray-600 hover:bg-gray-200"}
+              className={filter === f ? "px-4 py-2.5 min-h-[44px] rounded-xl font-medium text-sm bg-primary text-white" : "px-4 py-2.5 min-h-[44px] rounded-xl font-medium text-sm bg-zensar-surface text-gray-600 hover:bg-gray-200"}
             >
               {f === "all" ? "All" : f === "internship" ? "Internship" : "Permanent"}
             </button>

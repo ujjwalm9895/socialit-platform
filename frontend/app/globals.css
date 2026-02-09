@@ -20,11 +20,23 @@
 * {
   box-sizing: border-box;
 }
+html {
+  -webkit-text-size-adjust: 100%;
+}
 body {
   margin: 0;
   color: var(--color-text);
   background-color: var(--color-background);
+  overflow-x: hidden;
 }
+/* Safe area for notched devices */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+/* Touch-friendly: ensure tap targets in nav/CTAs are large enough (use min-h-[44px] or py-3 in components) */
 
 @layer utilities {
   .animate-fade-in-up {

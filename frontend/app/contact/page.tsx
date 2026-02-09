@@ -42,11 +42,11 @@ export default function ContactPage() {
 
   return (
     <PublicLayout>
-      <main className="max-w-2xl mx-auto px-4 py-16">
-        <h1 className="text-3xl font-bold text-zensar-dark mb-2">{heading}</h1>
-        <p className="text-zensar-muted mb-8">{subtext}</p>
+      <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-zensar-dark mb-2 break-words">{heading}</h1>
+        <p className="text-zensar-muted mb-6 sm:mb-8 text-sm sm:text-base break-words">{subtext}</p>
 
-        <div className="hover-lift rounded-2xl border border-gray-200 bg-white p-6 shadow-sm mb-10">
+        <div className="hover-lift rounded-xl sm:rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm mb-8 sm:mb-10">
           <div className="space-y-4 text-gray-700">
             {info?.email && (
               <p>

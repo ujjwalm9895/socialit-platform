@@ -25,14 +25,14 @@ export default function CaseStudiesPage() {
 
   return (
     <PublicLayout>
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Case Studies</h1>
-        <p className="text-zensar-muted mb-8">Our work across industries.</p>
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">Case Studies</h1>
+        <p className="text-zensar-muted mb-6 sm:mb-8">Our work across industries.</p>
         {industries.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-8">
-            <button type="button" onClick={() => setIndustryFilter("all")} className={`px-4 py-2 rounded-xl text-sm font-medium ${industryFilter === "all" ? "bg-primary text-white" : "bg-zensar-surface text-gray-600 hover:bg-gray-200"}`}>All</button>
+          <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
+            <button type="button" onClick={() => setIndustryFilter("all")} className={`px-4 py-2.5 min-h-[44px] rounded-xl text-sm font-medium ${industryFilter === "all" ? "bg-primary text-white" : "bg-zensar-surface text-gray-600 hover:bg-gray-200"}`}>All</button>
             {industries.map((ind) => (
-              <button key={ind} type="button" onClick={() => setIndustryFilter(ind)} className={`px-4 py-2 rounded-xl text-sm font-medium ${industryFilter === ind ? "bg-primary text-white" : "bg-zensar-surface text-gray-600 hover:bg-gray-200"}`}>{ind}</button>
+              <button key={ind} type="button" onClick={() => setIndustryFilter(ind)} className={`px-4 py-2.5 min-h-[44px] rounded-xl text-sm font-medium ${industryFilter === ind ? "bg-primary text-white" : "bg-zensar-surface text-gray-600 hover:bg-gray-200"}`}>{ind}</button>
             ))}
           </div>
         )}
@@ -48,7 +48,7 @@ export default function CaseStudiesPage() {
         ) : (
           <ul className="space-y-4">
             {filtered.map((c) => (
-              <li key={c.id} className="hover-lift border border-gray-200 rounded-xl p-5 bg-white shadow-sm">
+              <li key={c.id} className="hover-lift border border-gray-200 rounded-xl p-4 sm:p-5 bg-white shadow-sm">
                 <Link href={`/case-studies/${c.slug}`} className="block group">
                   <h2 className="text-xl font-semibold text-gray-900 group-hover:text-primary transition-colors">{c.title}</h2>
                   {c.client_name && <p className="text-gray-500 text-sm mt-1">Client: {c.client_name}</p>}

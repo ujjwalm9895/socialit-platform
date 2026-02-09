@@ -22,8 +22,8 @@ export default function ServicesPage() {
 
   return (
     <PublicLayout>
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Services</h1>
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6 sm:mb-8">Services</h1>
 
         {loading ? (
           <div className="flex flex-col items-center gap-3 py-12 text-zensar-muted">
@@ -39,7 +39,7 @@ export default function ServicesPage() {
             {published.map((s, i) => (
               <li
                 key={s.id}
-                className="hover-lift border border-gray-200 rounded-xl p-5 bg-white shadow-sm"
+                className="hover-lift border border-gray-200 rounded-xl p-4 sm:p-5 bg-white shadow-sm"
                 style={{ animationDelay: `${i * 0.03}s` }}
               >
                 <Link href={`/services/${s.slug}`} className="block group">

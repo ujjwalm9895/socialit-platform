@@ -20,10 +20,10 @@ export default function Footer({ config }: { config?: FooterConfig | null }) {
 
   return (
     <footer className="border-t border-gray-200 mt-auto" style={{ backgroundColor: bg, color: textColor }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-8">
           <p className="text-sm">{copyrightText}</p>
-          <div className="flex flex-wrap gap-8">
+          <div className="flex flex-wrap gap-6 sm:gap-8">
             {columns.map((col, i) => (
               <div key={i}>
                 {col.title && <p className="text-sm font-semibold mb-2" style={{ color: textColor }}>{col.title}</p>}
@@ -32,7 +32,7 @@ export default function Footer({ config }: { config?: FooterConfig | null }) {
                     <Link
                       key={j}
                       href={link.href}
-                      className="link-underline text-sm hover:opacity-90 transition"
+                      className="link-underline text-sm hover:opacity-90 transition py-2 sm:py-0 -my-1 sm:my-0 min-h-[44px] sm:min-h-0 flex items-center"
                       style={{ color: linkColor }}
                     >
                       {link.label}
