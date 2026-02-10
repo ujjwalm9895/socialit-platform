@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "../../api-client";
 import ColorField from "../components/ColorField";
 import SortableList from "../components/SortableList";
+import type { MegaMenuColumn, MegaMenuFeatured } from "../../../components/SiteSettingsProvider";
 
 type MenuItem = { id?: string; label?: string; href?: string; type?: string; open_in_new_tab?: boolean };
 type HeaderConfig = {
@@ -11,6 +12,9 @@ type HeaderConfig = {
   menu_items?: MenuItem[];
   cta_button?: { enabled?: boolean; text?: string; href?: string; style?: string; color?: string };
   styling?: { background_color?: string; text_color?: string; sticky?: boolean; padding_top?: number; padding_bottom?: number };
+  mega_menu?: boolean;
+  mega_menu_columns?: MegaMenuColumn[];
+  mega_menu_featured?: MegaMenuFeatured | null;
 };
 
 const defaultConfig: HeaderConfig = {
@@ -23,6 +27,12 @@ const defaultConfig: HeaderConfig = {
   ],
   cta_button: { enabled: true, text: "Contact Us", href: "/contact", style: "solid", color: "#6366f1" },
   styling: { background_color: "#ffffff", text_color: "#111827", sticky: true, padding_top: 16, padding_bottom: 16 },
+  mega_menu: false,
+  mega_menu_columns: [
+    { title: "What We Do", links: [{ label: "Industries", href: "/industries" }, { label: "About Us", href: "/about" }, { label: "Careers", href: "/careers" }, { label: "Contact", href: "/contact" }] },
+    { title: "Explore Our Services", links: [{ label: "Services", href: "/services" }, { label: "Case Studies", href: "/case-studies" }, { label: "Blogs", href: "/blogs" }] },
+  ],
+  mega_menu_featured: null,
 };
 
 export default function AdminHeaderPage() {
@@ -90,13 +100,33 @@ export default function AdminHeaderPage() {
   const logo = config.logo ?? {};
   const styling = config.styling ?? {};
   const cta = config.cta_button ?? {};
+  const megaMenu = config.mega_menu ?? false;
+  const megaColumns = config.mega_menu_columns ?? [];
+  const megaFeatured = config.mega_menu_featured ?? null;
+
+  const setMegaMenu = (v: boolean) => setConfig((p) => ({ ...p, mega_menu: v }));
+  const setMegaColumns = (cols: MegaMenuColumn[]) => setConfig((p) => ({ ...p, mega_menu_columns: cols }));
+  const setMegaFeatured = (f: MegaMenuFeatured | null) => setConfig((p) => ({ ...p, mega_menu_featured: f }));
+
+  const updateMegaColumn = (i: number, upd: Partial<MegaMenuColumn>) => {
+    const next = [...megaColumns];
+    next[i] = { ...(next[i] ?? {}), ...upd };
+    setMegaColumns(next);
+  };
+  const updateMegaColumnLink = (colIdx: number, linkIdx: number, upd: { label?: string; href?: string }) => {
+    const next = [...megaColumns];
+    const col = { ...(next[colIdx] ?? {}), links: [...(next[colIdx]?.links ?? [])] };
+    col.links![linkIdx] = { ...(col.links![linkIdx] ?? {}), ...upd };
+    next[colIdx] = col;
+    setMegaColumns(next);
+  };
 
   return (
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Header</h1>
-          <p className="text-slate-500 text-sm mt-1">Logo, navigation links, and CTA. Drag menu items to reorder.</p>
+          <p className="text-slate-500 text-sm mt-1">CMS-driven: logo, nav, mega menu, and CTA. Changes here are saved to the CMS and appear on the live site. Drag menu items to reorder.</p>
         </div>
         <button
           type="button"
@@ -230,6 +260,152 @@ export default function AdminHeaderPage() {
           addLabel="Menu item"
           emptyMessage="No menu items. Add one above."
         />
+      </div>
+
+      {/* Mega menu (Zensar-style) */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-slate-900 mb-2">Mega menu</h2>
+        <p className="text-slate-500 text-sm mb-4">Full-width overlay with nav columns and optional featured block. Edit columns and featured content to shape the menu. Saved to CMS and used on the live site.</p>
+        <label className="flex items-center gap-2 cursor-pointer mb-6">
+          <input
+            type="checkbox"
+            checked={megaMenu}
+            onChange={(e) => setMegaMenu(e.target.checked)}
+            className="rounded border-slate-300 text-primary focus:ring-primary"
+          />
+          <span className="text-sm font-medium text-slate-700">Enable mega-menu style</span>
+        </label>
+
+        {megaMenu && (
+          <div className="space-y-6 border-t border-slate-200 pt-6">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-700 mb-3">Columns (left side of overlay)</h3>
+              <div className="space-y-4">
+                {(megaColumns.length === 0 ? [{ title: "", links: [] }] : megaColumns).map((col, colIdx) => (
+                  <div key={colIdx} className="rounded-xl border border-slate-200 p-4 bg-slate-50/50 space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <input
+                        value={col.title ?? ""}
+                        onChange={(e) => updateMegaColumn(colIdx, { title: e.target.value })}
+                        placeholder="Column title (e.g. What We Do)"
+                        className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-primary"
+                      />
+                      {megaColumns.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setMegaColumns(megaColumns.filter((_, i) => i !== colIdx))}
+                          className="text-slate-500 hover:text-red-600 text-sm"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                    <div className="space-y-2 pl-0">
+                      {(col.links?.length ? col.links : [{ label: "", href: "" }]).map((link, linkIdx) => (
+                        <div key={linkIdx} className="flex gap-2">
+                          <input
+                            value={link.label ?? ""}
+                            onChange={(e) => updateMegaColumnLink(colIdx, linkIdx, { label: e.target.value })}
+                            placeholder="Label"
+                            className="flex-1 min-w-0 border border-slate-200 rounded-lg px-2 py-1.5 text-sm"
+                          />
+                          <input
+                            value={link.href ?? ""}
+                            onChange={(e) => updateMegaColumnLink(colIdx, linkIdx, { href: e.target.value })}
+                            placeholder="/path"
+                            className="flex-1 min-w-0 border border-slate-200 rounded-lg px-2 py-1.5 text-sm"
+                          />
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const next = [...megaColumns];
+                          const col = { ...(next[colIdx] ?? {}), links: [...(next[colIdx]?.links ?? []), { label: "", href: "" }] };
+                          next[colIdx] = col;
+                          setMegaColumns(next);
+                        }}
+                        className="text-sm text-primary font-medium"
+                      >
+                        + Add link
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setMegaColumns([...megaColumns, { title: "", links: [] }])}
+                  className="text-sm text-primary font-medium"
+                >
+                  + Add column
+                </button>
+              </div>
+            </div>
+
+            <div className="border-t border-slate-200 pt-4">
+              <h3 className="text-sm font-semibold text-slate-700 mb-3">Featured block (right side, optional)</h3>
+              <label className="flex items-center gap-2 cursor-pointer mb-3">
+                <input
+                  type="checkbox"
+                  checked={megaFeatured != null}
+                  onChange={(e) => setMegaFeatured(e.target.checked ? { title: "", description: "", link: "", link_text: "Read more" } : null)}
+                  className="rounded border-slate-300 text-primary focus:ring-primary"
+                />
+                <span className="text-sm text-slate-600">Show featured block</span>
+              </label>
+              {megaFeatured != null && (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-medium text-slate-500 mb-1">Image URL</label>
+                    <input
+                      value={megaFeatured.image_url ?? ""}
+                      onChange={(e) => setMegaFeatured({ ...megaFeatured, image_url: e.target.value })}
+                      placeholder="https://..."
+                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-slate-500 mb-1">Title</label>
+                    <input
+                      value={megaFeatured.title ?? ""}
+                      onChange={(e) => setMegaFeatured({ ...megaFeatured, title: e.target.value })}
+                      placeholder="Headline"
+                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-slate-500 mb-1">Link</label>
+                    <input
+                      value={megaFeatured.link ?? ""}
+                      onChange={(e) => setMegaFeatured({ ...megaFeatured, link: e.target.value })}
+                      placeholder="/page"
+                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-medium text-slate-500 mb-1">Description</label>
+                    <textarea
+                      value={megaFeatured.description ?? ""}
+                      onChange={(e) => setMegaFeatured({ ...megaFeatured, description: e.target.value })}
+                      placeholder="Short description..."
+                      rows={2}
+                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-slate-500 mb-1">Link text</label>
+                    <input
+                      value={megaFeatured.link_text ?? "Read more"}
+                      onChange={(e) => setMegaFeatured({ ...megaFeatured, link_text: e.target.value })}
+                      placeholder="Read more"
+                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* CTA button */}

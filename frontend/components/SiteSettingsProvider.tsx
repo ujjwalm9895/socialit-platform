@@ -4,11 +4,20 @@ import { useEffect, useState } from "react";
 import api from "../app/api-client";
 
 export type ThemeConfig = Record<string, string>;
+export type MegaMenuLink = { label?: string; href?: string };
+export type MegaMenuColumn = { title?: string; links?: MegaMenuLink[] };
+export type MegaMenuFeatured = { image_url?: string; title?: string; description?: string; link?: string; link_text?: string };
 export type HeaderConfig = {
   logo?: { type?: string; text?: string; subtext?: string; image_url?: string; link?: string };
   menu_items?: Array<{ id?: string; label?: string; href?: string; type?: string; children?: unknown[]; open_in_new_tab?: boolean }>;
   cta_button?: { enabled?: boolean; text?: string; href?: string; style?: string; color?: string };
   styling?: { background_color?: string; text_color?: string; sticky?: boolean; padding_top?: number; padding_bottom?: number };
+  /** When true, shows a full-width mega-menu overlay (Zensar-style) with columns + optional featured block */
+  mega_menu?: boolean;
+  /** Nav columns shown in the mega-menu (e.g. "What We Do", "Explore Our Services") */
+  mega_menu_columns?: MegaMenuColumn[];
+  /** Optional featured block (image + text + CTA) on the right side of the mega-menu */
+  mega_menu_featured?: MegaMenuFeatured | null;
 };
 export type FooterConfig = {
   columns?: Array<{ title?: string; links?: Array<{ label: string; href: string }> }>;

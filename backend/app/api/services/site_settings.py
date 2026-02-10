@@ -78,7 +78,13 @@ def get_header_config(db: Session) -> Dict[str, Any]:
             "sticky": True,
             "padding_top": 16,
             "padding_bottom": 16
-        }
+        },
+        "mega_menu": False,
+        "mega_menu_columns": [
+            {"title": "What We Do", "links": [{"label": "Industries We Empower", "href": "/industries"}, {"label": "Our Perspectives", "href": "/blogs"}]},
+            {"title": "Explore Our Services", "links": [{"label": "Application Services", "href": "/services"}, {"label": "Contact", "href": "/contact"}]},
+        ],
+        "mega_menu_featured": None,
     })
 
 
