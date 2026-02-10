@@ -103,7 +103,7 @@ const SECTION_DEFAULTS: Record<string, Record<string, unknown>> = {
     subtext: "Numbers that reflect our commitment to excellence.",
     items: [
       { value: "150+", label: "Happy Clients" },
-      { value: "20K+", label: Projects Delivered },
+      { value: "20K+", label: "Projects Delivered" },
       { value: "8+", label: "Years Experience" },
       { value: "20+", label: "States Served" },
     ],
