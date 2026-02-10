@@ -19,10 +19,38 @@ export type HeaderConfig = {
   /** Optional featured block (image + text + CTA) on the right side of the mega-menu */
   mega_menu_featured?: MegaMenuFeatured | null;
 };
+export type FooterLink = { id?: string; label: string; href: string; open_in_new_tab?: boolean };
+export type FooterColumn = { id?: string; title?: string; content?: string; links?: FooterLink[] };
 export type FooterConfig = {
-  columns?: Array<{ title?: string; links?: Array<{ label: string; href: string }> }>;
+  columns?: FooterColumn[];
   copyright_text?: string;
+  newsletter_title?: string;
+  newsletter_placeholder?: string;
+  newsletter_button_text?: string;
+  legal_links?: FooterLink[];
   styling?: { background_color?: string; text_color?: string; link_color?: string };
+};
+
+export type HeroAwardLogo = { image_url?: string; link_url?: string; alt?: string };
+export type HeroDataCard = { title?: string; value?: string; label?: string; icon?: string };
+export type HeroConfig = {
+  enabled?: boolean;
+  headline?: string;
+  description?: string;
+  tagline?: string;
+  email_placeholder?: string;
+  cta_primary_text?: string;
+  cta_primary_link?: string;
+  cta_secondary_text?: string;
+  cta_secondary_link?: string;
+  awards_headline?: string;
+  award_logos?: HeroAwardLogo[];
+  /** Right column banner image (main image in col-md-7) */
+  banner_image_url?: string;
+  background_image_url?: string;
+  chat_button_text?: string;
+  chat_button_link?: string;
+  data_cards?: HeroDataCard[];
 };
 
 const DEFAULT_THEME: ThemeConfig = {
@@ -55,6 +83,7 @@ export function useSiteSettings() {
   const [theme, setTheme] = useState<ThemeConfig>(DEFAULT_THEME);
   const [header, setHeader] = useState<HeaderConfig | null>(null);
   const [footer, setFooter] = useState<FooterConfig | null>(null);
+  const [hero, setHero] = useState<HeroConfig | null>(null);
 
   useEffect(() => {
     applyTheme(theme);
@@ -69,8 +98,9 @@ export function useSiteSettings() {
       }).catch(() => {}),
       api.get<HeaderConfig>("/cms/site-settings/header").then((r) => setHeader(r.data || null)).catch(() => {}),
       api.get<FooterConfig>("/cms/site-settings/footer").then((r) => setFooter(r.data || null)).catch(() => {}),
+      api.get<HeroConfig>("/cms/site-settings/hero").then((r) => setHero(r.data || null)).catch(() => {}),
     ]);
   }, []);
 
-  return { theme, header, footer };
+  return { theme, header, footer, hero };
 }

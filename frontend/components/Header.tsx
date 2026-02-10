@@ -1,11 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import type { HeaderConfig } from "./SiteSettingsProvider";
 
-const DEFAULT_MENU = [
-  { label: "Services", href: "/services" },
+type MenuItem = {
+  id?: string;
+  label?: string;
+  href?: string;
+  type?: string;
+  children?: Array<{ id?: string; label?: string; href?: string; type?: string; open_in_new_tab?: boolean }>;
+  open_in_new_tab?: boolean;
+};
+
+const DEFAULT_SERVICES = [
+  { label: "Website Development", href: "/services/website-development" },
+  { label: "App Development", href: "/services/app-development" },
+  { label: "Social Media Marketing", href: "/services/social-media-marketing" },
+  { label: "Digital Marketing", href: "/services/digital-marketing" },
+  { label: "Logo Design", href: "/services/logo-design" },
+  { label: "Packaging Design", href: "/services/packaging-design" },
+  { label: "Branding & Advertising", href: "/services/branding-advertising" },
+  { label: "UI/UX Design", href: "/services/ui-ux-design" },
+  { label: "Graphic Design", href: "/services/graphic-design" },
+];
+
+const DEFAULT_MENU: MenuItem[] = [
+  { label: "Services", href: "/services", type: "dropdown", children: DEFAULT_SERVICES },
   { label: "Blogs", href: "/blogs" },
   { label: "Case Studies", href: "/case-studies" },
   { label: "Admin", href: "/admin/login" },
@@ -13,6 +34,8 @@ const DEFAULT_MENU = [
 
 export default function Header({ config }: { config?: HeaderConfig | null }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const servicesRef = useRef<HTMLDivElement>(null);
 
   const logo = config?.logo;
   const logoText = logo?.text ?? "Social IT";
@@ -34,18 +57,79 @@ export default function Header({ config }: { config?: HeaderConfig | null }) {
   }, [mobileOpen]);
 
   useEffect(() => {
-    const onEscape = (e: KeyboardEvent) => { if (e.key === "Escape") setMobileOpen(false); };
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMobileOpen(false);
+        setServicesOpen(false);
+      }
+    };
     window.addEventListener("keydown", onEscape);
     return () => window.removeEventListener("keydown", onEscape);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (servicesRef.current && !servicesRef.current.contains(e.target as Node)) setServicesOpen(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const menuItemsTyped = menuItems as MenuItem[];
   const navContent = (
     <>
-      {menuItems.map((item, i) => {
+      {menuItemsTyped.map((item, i) => {
+        const isDropdown = item.type === "dropdown" && Array.isArray(item.children) && item.children.length > 0;
         const openInNewTab = "open_in_new_tab" in item && item.open_in_new_tab;
+
+        if (isDropdown) {
+          return (
+            <div
+              key={item.id ?? i}
+              className="relative"
+              ref={servicesRef}
+              onMouseEnter={() => setServicesOpen(true)}
+              onMouseLeave={() => setServicesOpen(false)}
+            >
+              <button
+                type="button"
+                onClick={() => setServicesOpen((o) => !o)}
+                className="link-underline text-sm font-medium hover:opacity-90 transition py-3 md:py-0 flex items-center gap-1 bg-transparent border-0 cursor-pointer"
+                style={{ color: textColor ?? undefined }}
+                aria-expanded={servicesOpen}
+                aria-haspopup="true"
+              >
+                {item.label}
+                <svg className={`w-4 h-4 transition-transform ${servicesOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div
+                className={`absolute left-0 top-full pt-1 transition-opacity duration-150 ${servicesOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+                aria-hidden={!servicesOpen}
+              >
+                <div className="min-w-[220px] rounded-lg shadow-xl border border-white/10 bg-[#0f172a] py-2 z-50">
+                  {(item.children ?? []).map((child, j) => (
+                    <Link
+                      key={child.id ?? j}
+                      href={child.href ?? "#"}
+                      className="block px-4 py-2.5 text-sm text-white/90 hover:bg-white/10 hover:text-white transition"
+                      target={(child as { open_in_new_tab?: boolean }).open_in_new_tab ? "_blank" : undefined}
+                      rel={(child as { open_in_new_tab?: boolean }).open_in_new_tab ? "noopener noreferrer" : undefined}
+                      onClick={() => { setServicesOpen(false); setMobileOpen(false); }}
+                    >
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        }
+
         return (
           <Link
-            key={i}
+            key={item.id ?? i}
             href={item.href ?? "#"}
             className="link-underline text-sm font-medium hover:opacity-90 transition py-3 md:py-0"
             style={{ color: textColor ?? undefined }}
@@ -283,11 +367,34 @@ export default function Header({ config }: { config?: HeaderConfig | null }) {
             </button>
           </div>
           <nav className="flex flex-col p-4 gap-1 overflow-y-auto">
-            {menuItems.map((item, i) => {
+            {(menuItems as MenuItem[]).map((item, i) => {
+              const isDropdown = item.type === "dropdown" && Array.isArray(item.children) && item.children.length > 0;
               const openInNewTab = "open_in_new_tab" in item && item.open_in_new_tab;
+              if (isDropdown) {
+                return (
+                  <div key={item.id ?? i} className="py-2">
+                    <p className="px-4 py-2 text-sm font-semibold opacity-80" style={{ color: textColor ?? undefined }}>{item.label}</p>
+                    <div className="pl-4 mt-1 space-y-0.5">
+                      {(item.children ?? []).map((child, j) => (
+                        <Link
+                          key={child.id ?? j}
+                          href={child.href ?? "#"}
+                          className="block py-2.5 px-4 rounded-lg text-base font-medium hover:opacity-90 transition min-h-[44px] flex items-center"
+                          style={{ color: textColor ?? undefined }}
+                          target={(child as { open_in_new_tab?: boolean }).open_in_new_tab ? "_blank" : undefined}
+                          rel={(child as { open_in_new_tab?: boolean }).open_in_new_tab ? "noopener noreferrer" : undefined}
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
               return (
                 <Link
-                  key={i}
+                  key={item.id ?? i}
                   href={item.href ?? "#"}
                   className="py-3 px-4 rounded-xl text-base font-medium hover:opacity-90 transition min-h-[48px] flex items-center"
                   style={{ color: textColor ?? undefined }}

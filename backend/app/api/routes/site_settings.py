@@ -9,6 +9,8 @@ from app.api.services.site_settings import (
     set_setting,
     get_header_config,
     save_header_config,
+    get_hero_config,
+    save_hero_config,
     get_footer_config,
     save_footer_config,
     get_theme_config,
@@ -58,6 +60,60 @@ async def update_header(
         key=setting.key,
         value=setting.value,
         description=setting.description
+    )
+
+
+@router.get("/hero", response_model=Dict[str, Any])
+async def get_hero(db: Session = Depends(get_db)):
+    """Get hero section configuration (public endpoint)"""
+    return get_hero_config(db)
+
+
+@router.put("/hero", response_model=SiteSettingsOut)
+async def update_hero(
+    config: Dict[str, Any] = Body(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Update hero section configuration (requires authentication)"""
+    user_role_names = {ur.role.name for ur in current_user.user_roles}
+    if "admin" not in user_role_names and "editor" not in user_role_names:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin or Editor role required",
+        )
+    setting = save_hero_config(db, config)
+    return SiteSettingsOut(
+        key=setting.key,
+        value=setting.value,
+        description=setting.description,
+    )
+
+
+@router.get("/hero", response_model=Dict[str, Any])
+async def get_hero(db: Session = Depends(get_db)):
+    """Get hero section configuration (public endpoint)"""
+    return get_hero_config(db)
+
+
+@router.put("/hero", response_model=SiteSettingsOut)
+async def update_hero(
+    config: Dict[str, Any] = Body(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Update hero section configuration (requires authentication)"""
+    user_role_names = {ur.role.name for ur in current_user.user_roles}
+    if "admin" not in user_role_names and "editor" not in user_role_names:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin or Editor role required",
+        )
+    setting = save_hero_config(db, config)
+    return SiteSettingsOut(
+        key=setting.key,
+        value=setting.value,
+        description=setting.description,
     )
 
 

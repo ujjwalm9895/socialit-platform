@@ -42,7 +42,7 @@ const SECTION_DEFAULTS: Record<string, Record<string, unknown>> = {
   cta: { heading: "Get in touch", subtext: "We'd love to hear from you.", buttonText: "Contact", buttonLink: "#" },
 };
 
-const SECTION_TYPES = ["hero", "text", "image", "features", "stats", "testimonials", "cta"] as const;
+const SECTION_TYPES = ["hero", "text", "image", "features", "stats", "testimonials", "cta", "services-grid"] as const;
 
 function SectionCard({
   id,

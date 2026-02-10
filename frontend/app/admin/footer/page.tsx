@@ -21,11 +21,15 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-type FooterLink = { label: string; href: string };
-type FooterColumn = { title?: string; links?: FooterLink[] };
+type FooterLink = { id?: string; label: string; href: string; open_in_new_tab?: boolean };
+type FooterColumn = { id?: string; title?: string; content?: string; links?: FooterLink[] };
 type FooterConfig = {
   columns?: FooterColumn[];
   copyright_text?: string;
+  newsletter_title?: string;
+  newsletter_placeholder?: string;
+  newsletter_button_text?: string;
+  legal_links?: FooterLink[];
   styling?: { background_color?: string; text_color?: string; link_color?: string };
 };
 
@@ -95,9 +99,19 @@ function ColumnCard({
           </svg>
         </button>
       </div>
+      <div className="p-4 pb-0">
+        <label className="block text-xs font-medium text-slate-500 mb-1">Column description (optional)</label>
+        <textarea
+          value={column.content ?? ""}
+          onChange={(e) => onUpdate({ ...column, content: e.target.value })}
+          placeholder="Short text or leave empty"
+          rows={2}
+          className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary"
+        />
+      </div>
       <div className="p-4 space-y-2">
         {links.map((link, j) => (
-          <div key={j} className="flex gap-2">
+          <div key={link.id ?? j} className="flex gap-2">
             <input
               value={link.label}
               onChange={(e) => {
@@ -227,6 +241,76 @@ export default function AdminFooterPage() {
           placeholder="© {year} Your Company."
         />
         <p className="text-xs text-slate-500 mt-1">Use {"{year}"} to insert current year.</p>
+      </div>
+
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-slate-900 mb-2">Newsletter</h2>
+        <div className="space-y-3">
+          <input
+            value={config.newsletter_title ?? ""}
+            onChange={(e) => setConfig((prev) => ({ ...prev, newsletter_title: e.target.value }))}
+            placeholder="Subscribe to Our Newsletter for the Latest Updates"
+            className="w-full border-2 border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-primary"
+          />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <input
+              value={config.newsletter_placeholder ?? ""}
+              onChange={(e) => setConfig((prev) => ({ ...prev, newsletter_placeholder: e.target.value }))}
+              placeholder="Placeholder (e.g. Your email)"
+              className="border-2 border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-primary"
+            />
+            <input
+              value={config.newsletter_button_text ?? ""}
+              onChange={(e) => setConfig((prev) => ({ ...prev, newsletter_button_text: e.target.value }))}
+              placeholder="Button text (e.g. Send)"
+              className="border-2 border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-primary"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-slate-900 mb-2">Legal links (Terms, Privacy)</h2>
+        <ul className="space-y-2">
+          {(config.legal_links ?? []).map((link, j) => (
+            <li key={link.id ?? j} className="flex gap-2">
+              <input
+                value={link.label}
+                onChange={(e) => {
+                  const next = [...(config.legal_links ?? [])];
+                  next[j] = { ...next[j], label: e.target.value };
+                  setConfig((prev) => ({ ...prev, legal_links: next }));
+                }}
+                placeholder="Label"
+                className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm"
+              />
+              <input
+                value={link.href}
+                onChange={(e) => {
+                  const next = [...(config.legal_links ?? [])];
+                  next[j] = { ...next[j], href: e.target.value };
+                  setConfig((prev) => ({ ...prev, legal_links: next }));
+                }}
+                placeholder="/terms"
+                className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm"
+              />
+              <button
+                type="button"
+                onClick={() => setConfig((prev) => ({ ...prev, legal_links: (prev.legal_links ?? []).filter((_, k) => k !== j) }))}
+                className="p-2 text-slate-400 hover:text-red-600 rounded-lg"
+              >
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
+        <button
+          type="button"
+          onClick={() => setConfig((prev) => ({ ...prev, legal_links: [...(prev.legal_links ?? []), { label: "", href: "/terms" }] }))}
+          className="mt-2 text-sm font-medium text-primary hover:underline"
+        >
+          + Add legal link
+        </button>
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">

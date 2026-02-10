@@ -93,6 +93,37 @@ def save_header_config(db: Session, config: Dict[str, Any]) -> SiteSettings:
     return set_setting(db, "header", config, "Header configuration")
 
 
+def get_hero_config(db: Session) -> Dict[str, Any]:
+    """Get hero section configuration (homepage hero with two-column layout)"""
+    return get_setting_value(db, "hero", {
+        "enabled": True,
+        "headline": "Weaving Your Brand's Digital Success Story",
+        "description": "Maintain a winning reputation, engage digitally, and deliver an exceptional customer experience - all from one intuitive platform.",
+        "tagline": "Web Development Company in Kota",
+        "email_placeholder": "Enter your email",
+        "cta_primary_text": "Get A Demo",
+        "cta_primary_link": "/contact",
+        "cta_secondary_text": "Explore Case Study",
+        "cta_secondary_link": "/case-studies",
+        "awards_headline": "Trusted & Awarded By Global Leaders",
+        "award_logos": [
+            {"image_url": "", "link_url": "", "alt": "JCI"},
+            {"image_url": "", "link_url": "", "alt": "Indian Achievers"},
+            {"image_url": "", "link_url": "", "alt": "Rotary"},
+        ],
+        "banner_image_url": "",
+        "background_image_url": "",
+        "chat_button_text": "Let's Chat",
+        "chat_button_link": "/contact",
+        "data_cards": [],
+    })
+
+
+def save_hero_config(db: Session, config: Dict[str, Any]) -> SiteSettings:
+    """Save hero section configuration"""
+    return set_setting(db, "hero", config, "Hero section configuration")
+
+
 def get_footer_config(db: Session) -> Dict[str, Any]:
     """Get footer configuration"""
     return get_setting_value(db, "footer", {

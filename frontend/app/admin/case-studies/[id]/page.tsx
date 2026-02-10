@@ -5,12 +5,17 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import api from "../../../api-client";
 
+const PORTFOLIO_INDUSTRIES = ["", "Jewellers", "Healthcare", "Education", "Restaurants and Hotels", "Lifestyle", "FMCG", "Other"];
+
 type CaseStudy = {
   id: string;
   slug: string;
   title: string;
   client_name?: string;
   excerpt?: string;
+  industry?: string;
+  tags?: string[];
+  featured_image_url?: string;
   status: string;
 };
 
@@ -22,6 +27,9 @@ export default function EditCaseStudyPage() {
   const [title, setTitle] = useState("");
   const [clientName, setClientName] = useState("");
   const [excerpt, setExcerpt] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [tagsStr, setTagsStr] = useState("");
+  const [featuredImageUrl, setFeaturedImageUrl] = useState("");
   const [status, setStatus] = useState<"draft" | "published">("draft");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -37,6 +45,9 @@ export default function EditCaseStudyPage() {
         setTitle(r.data.title);
         setClientName(r.data.client_name ?? "");
         setExcerpt(r.data.excerpt ?? "");
+        setIndustry(r.data.industry ?? "");
+        setTagsStr(Array.isArray(r.data.tags) ? r.data.tags.join(", ") : "");
+        setFeaturedImageUrl(r.data.featured_image_url ?? "");
         setStatus((r.data.status as "draft" | "published") ?? "draft");
       })
       .catch(() => setError("Failed to load"))
@@ -49,6 +60,7 @@ export default function EditCaseStudyPage() {
       setError("Title and slug are required.");
       return;
     }
+    const tags = tagsStr.split(",").map((t) => t.trim()).filter(Boolean);
     setError("");
     setSaving(true);
     api
@@ -57,6 +69,9 @@ export default function EditCaseStudyPage() {
         title: title.trim(),
         client_name: clientName.trim() || undefined,
         excerpt: excerpt.trim() || undefined,
+        industry: industry.trim() || undefined,
+        tags: tags.length ? tags : undefined,
+        featured_image_url: featuredImageUrl.trim() || undefined,
         status,
       })
       .then(() => router.push("/admin/case-studies"))
@@ -109,6 +124,23 @@ export default function EditCaseStudyPage() {
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Excerpt</label>
             <textarea value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={2} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-primary" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Industry (Portfolio filter)</label>
+            <select value={industry} onChange={(e) => setIndustry(e.target.value)} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-primary">
+              {PORTFOLIO_INDUSTRIES.map((ind) => (
+                <option key={ind || "none"} value={ind}>{ind || "— Select —"}</option>
+              ))}
+            </select>
+            <p className="text-xs text-slate-500 mt-1">e.g. Jewellers, Healthcare, Education, Lifestyle, FMCG</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Tags (comma-separated, for portfolio)</label>
+            <input value={tagsStr} onChange={(e) => setTagsStr(e.target.value)} placeholder="Websites, Logo Designs, UI/UX Designs" className="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-primary" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Featured image URL</label>
+            <input value={featuredImageUrl} onChange={(e) => setFeaturedImageUrl(e.target.value)} placeholder="https://..." className="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-primary" />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>

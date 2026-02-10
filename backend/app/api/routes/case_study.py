@@ -97,6 +97,8 @@ async def list_case_studies_endpoint(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
     status: Optional[ContentStatus] = Query(None),
+    industry: Optional[str] = Query(None),
+    category: Optional[str] = Query(None),
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_user),
 ):
@@ -115,7 +117,10 @@ async def list_case_studies_endpoint(
                 detail="Only published case studies are accessible to public"
             )
     
-    case_studies = list_case_studies(db=db, skip=skip, limit=limit, status=status)
+    case_studies = list_case_studies(
+        db=db, skip=skip, limit=limit, status=status,
+        industry=industry, category=category,
+    )
     return case_studies
 
 

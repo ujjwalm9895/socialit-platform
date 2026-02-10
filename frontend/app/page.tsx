@@ -81,13 +81,18 @@ export default function Home() {
         </button>
       </main>
     );
-  } else if (!page || !page.content?.length) {
-    content = (
+  } else {
+    const sections = page && Array.isArray(page.content) ? page.content : [];
+
+    if (!page || sections.length === 0) {
+      content = (
       <main className="min-h-[60vh] flex flex-col items-center justify-center gap-8 px-4 bg-zensar-surface">
         <div className="max-w-md text-center">
           <h1 className="text-3xl font-bold text-zensar-dark mb-3">Welcome to your site</h1>
           <p className="text-zensar-muted text-lg leading-relaxed mb-8">
-            Your homepage is empty. Add sections from the admin to build a beautiful landing experience.
+            {!page
+              ? "No homepage has been set up yet. Go to Admin → Homepage to create it (you’ll get a hero section by default), then Save."
+              : "Your homepage has no sections yet. Add sections from Admin → Homepage and click Save."}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="/admin/login" className="btn-flashy inline-flex items-center justify-center rounded-xl bg-primary px-8 py-4 text-white font-semibold shadow-glow hover:bg-primary-dark">
@@ -100,17 +105,18 @@ export default function Home() {
         </div>
       </main>
     );
-  } else {
-    content = (
-      <main className="min-h-screen">
-        {page.content.map((section, i) => (
-          <SectionRenderer
-            key={section.id ?? `s-${i}`}
-            section={{ type: section.type, data: section.data || {}, id: section.id }}
-          />
-        ))}
-      </main>
-    );
+    } else {
+      content = (
+        <main className="min-h-screen">
+          {sections.map((section, i) => (
+            <SectionRenderer
+              key={section.id ?? `s-${i}`}
+              section={{ type: section.type, data: section.data || {}, id: section.id }}
+            />
+          ))}
+        </main>
+      );
+    }
   }
 
   return <PublicLayout>{content}</PublicLayout>;

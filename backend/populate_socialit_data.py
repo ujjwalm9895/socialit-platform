@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 from app.db.session import SessionLocal
 from app.models.user import User
 from app.models.enums import ContentStatus
-from app.api.services.service import create_service
+from app.api.services.service import create_service, get_service_by_slug, update_service
 from app.api.services.case_study import create_case_study
 from app.api.services.blog import create_blog
 from app.api.services.page import create_page, get_page_by_slug, update_page
@@ -24,6 +24,8 @@ from app.api.services.site_settings import (
     save_header_config,
     save_footer_config,
     save_theme_config,
+    save_about_page,
+    save_contact_info,
 )
 from sqlalchemy import select
 
@@ -140,8 +142,114 @@ def create_services(db: Session, user: User):
             print(f"[ERROR] Error creating service {service_data['title']}: {e}")
 
 
+def update_app_development_service_content(db: Session, user: User):
+    """Update App Development service with full content extracted from https://socialit.in/app-development.php"""
+    try:
+        service = get_service_by_slug(db, "app-development")
+    except Exception:
+        print("[SKIP] App Development service not found (run create_services first)")
+        return
+    description = (
+        "We develop Native Apps and Cross-platform Apps so your app is available to a larger share of potential users "
+        "and delivers a smooth experience anytime. We use an agile method to flexibly evolve our approach with feedback, "
+        "iteration, and fast time-to-market. Building a mobile application implements the right level of the system "
+        "for functionality, usability, and scalability.\n\n"
+        "Our depth of experience includes high-performance native iOS app development for iPhones, iPads, and Apple Watch, "
+        "so you get the most from the iOS ecosystem. We also create efficient, cost-effective hybrid apps that scale to "
+        "iOS, Android, and web so you reach more people with the same development effort. We build with Google's Flutter "
+        "framework to deliver ultra-appealing, powerful applications with optimal user experience and improved conversion rates."
+    )
+    content = {
+        "services_offered": [
+            {
+                "title": "Native iOS App Development",
+                "description": "High-performance native iOS apps for iPhones, iPads, and Apple Watch, leveraging the full iOS ecosystem.",
+            },
+            {
+                "title": "Cross-Platform & Hybrid Apps",
+                "description": "Efficient hybrid apps for iOS, Android, and web so you reach more users with the same development effort.",
+            },
+            {
+                "title": "Flutter Development",
+                "description": "We build with Google's Flutter framework to deliver ultra-appealing, powerful applications with optimal user experience and improved conversion rates.",
+            },
+            {
+                "title": "UI/UX Design",
+                "description": "Creating user-intuitive and engaging interfaces for an easy experience.",
+            },
+            {
+                "title": "Development",
+                "description": "Reliable backend and frontend solutions using Laravel, WordPress, PHP, React, Vue.js, and Node.js.",
+            },
+            {
+                "title": "Testing & QA",
+                "description": "Thorough testing to guarantee functionality, security, and performance.",
+            },
+            {
+                "title": "Deployment & Launch",
+                "description": "Put the website or application in launch-ready form.",
+            },
+            {
+                "title": "Support and Maintenance",
+                "description": "Future-proof updates, security patches, and ongoing support.",
+            },
+        ],
+        "procedure": [
+            {"title": "Brainstorming & Planning", "description": "App goals, who the app is for, and what it will include."},
+            {"title": "UI/UX Design", "description": "Creating wireframes and basic designs that make the app simple to use."},
+            {"title": "Development", "description": "Building the app with the best frameworks and technology."},
+            {"title": "Testing", "description": "Run tests to verify functionality, performance, and security features."},
+            {"title": "Deployment", "description": "Publish the app in App Stores and improve visibility."},
+            {"title": "Support & Maintenance", "description": "Keeping the app updated with regular maintenance and support for performance and customer satisfaction."},
+        ],
+        "benefits": [
+            "Larger share of potential users with cross-platform availability",
+            "Smooth experience anytime, on any device",
+            "Agile method with feedback, iteration, and fast time-to-market",
+            "Functionality, usability, and scalability built in",
+            "Native iOS and hybrid options for best performance and reach",
+            "Flutter-powered apps for consistent, high-quality UX",
+            "End-to-end support from planning to maintenance",
+        ],
+        "faqs": [
+            {"question": "How do you approach app development?", "answer": "We follow a customer-centric approach, starting with in-depth requirements analysis. Our skilled team designs, develops, and tests applications for various platforms, ensuring high performance, security, and user satisfaction."},
+            {"question": "Can you handle both iOS and Android app development?", "answer": "Absolutely. We specialize in cross-platform app development, creating seamless experiences for both iOS and Android users. This approach saves time and costs while ensuring broad market coverage."},
+            {"question": "What about app maintenance and updates?", "answer": "We provide ongoing support, monitoring, and updates to keep your app relevant and bug-free. Our team ensures your app remains optimized, secure, and aligned with the latest technological trends."},
+            {"question": "How do you ensure app security?", "answer": "Security is paramount. We implement encryption, secure authentication, and rigorous testing to protect user data. Regular security audits and updates safeguard your app from vulnerabilities."},
+            {"question": "Can you assist in app monetization strategies?", "answer": "Certainly. We help you explore various monetization options, such as in-app purchases, ads, or subscription models, guiding you to choose the best strategy that aligns with your app's purpose and user base."},
+        ],
+        "related_services": [
+            "Website Development",
+            "Social Media Marketing",
+            "Digital Marketing",
+            "Logo Design",
+            "Packaging Design",
+            "Branding & Advertising",
+            "UI/UX Design",
+            "Graphic Design",
+        ],
+        "cta_text": "Contact Us",
+        "cta_link": "/contact",
+    }
+    update_service(
+        db=db,
+        service_id=service.id,
+        data={
+            "title": "App Development",
+            "subtitle": "Next-Gen App Solutions",
+            "description": description,
+            "content": content,
+            "meta_title": "Hire the Best App Development Company in Kota | Social IT",
+            "meta_description": "Native and cross-platform app development. iOS, Android, Flutter. Agile process, security, and ongoing support. Get a quote today.",
+            "meta_keywords": ["app development", "mobile apps", "iOS development", "Android development", "Flutter", "cross-platform", "Kota"],
+        },
+        user=user,
+    )
+    print("[OK] Updated App Development service with content from socialit.in/app-development.php")
+
+
 def create_case_studies(db: Session, user: User):
-    """Create case studies/testimonials"""
+    """Create case studies/portfolio items – categories aligned with socialit.in/portfolio.php (Jewellers, Healthcare, Education, Websites, Logo Designs, etc.)."""
     case_studies = [
         {
             "slug": "sudha-hospital",
@@ -152,8 +260,9 @@ def create_case_studies(db: Session, user: User):
             "solution": "We developed a comprehensive website and implemented digital marketing strategies to reach more patients.",
             "results": "Increased online visibility by 300% and improved patient inquiries significantly.",
             "industry": "Healthcare",
-            "tags": ["healthcare", "website", "digital marketing"],
+            "tags": ["healthcare", "Websites", "digital marketing"],
             "status": ContentStatus.PUBLISHED,
+            "featured_image_url": None,
             "meta_title": "Sudha Hospital Case Study | Social IT",
             "meta_description": "How Social IT helped Sudha Hospital transform their digital presence.",
         },
@@ -165,9 +274,10 @@ def create_case_studies(db: Session, user: User):
             "challenge": "Sahara Group needed a complete visual identity refresh and consistent branding across all touchpoints.",
             "solution": "We created a comprehensive branding package including logo, color palette, typography, and marketing materials.",
             "results": "Enhanced brand recognition and visual consistency across all platforms.",
-            "industry": "Business",
-            "tags": ["branding", "graphic design", "visual identity"],
+            "industry": "Lifestyle",
+            "tags": ["Branding & Advertising", "Logo Designs", "Graphic Design"],
             "status": ContentStatus.PUBLISHED,
+            "featured_image_url": None,
             "meta_title": "Sahara Group Case Study | Social IT",
             "meta_description": "Complete branding solution for Sahara Group.",
         },
@@ -180,8 +290,9 @@ def create_case_studies(db: Session, user: User):
             "solution": "We developed a responsive, user-friendly mobile application with booking and results features.",
             "results": "Improved patient engagement and streamlined service delivery.",
             "industry": "Healthcare",
-            "tags": ["mobile app", "healthcare", "app development"],
+            "tags": ["mobile app", "healthcare", "App Development", "UI/UX Designs"],
             "status": ContentStatus.PUBLISHED,
+            "featured_image_url": None,
             "meta_title": "RCTI Diagnostic Case Study | Social IT",
             "meta_description": "Mobile app development for RCTI Diagnostic.",
         },
@@ -193,11 +304,72 @@ def create_case_studies(db: Session, user: User):
             "challenge": "Gondilal Kiva Jewellers needed to expand their reach and engage with younger audiences.",
             "solution": "We created and executed a comprehensive social media marketing strategy with engaging creatives.",
             "results": "Significant increase in brand awareness and customer engagement.",
-            "industry": "Retail",
-            "tags": ["social media marketing", "retail", "content marketing"],
+            "industry": "Jewellers",
+            "tags": ["Social Media Marketing", "Lifestyle", "content marketing"],
             "status": ContentStatus.PUBLISHED,
+            "featured_image_url": None,
             "meta_title": "Gondilal Kiva Jewellers Case Study | Social IT",
             "meta_description": "Social media marketing success for Gondilal Kiva Jewellers.",
+        },
+        {
+            "slug": "physics-wallah-education",
+            "title": "Physics Wallah - EdTech Platform",
+            "client_name": "Physics Wallah",
+            "excerpt": "Enabling scalable online education with a robust digital platform.",
+            "challenge": "Deliver a seamless learning experience to millions of students.",
+            "solution": "We built a high-performance web platform with video, assessments, and live classes.",
+            "results": "Improved engagement and platform reliability at scale.",
+            "industry": "Education",
+            "tags": ["Websites", "Education", "UI/UX Designs"],
+            "status": ContentStatus.PUBLISHED,
+            "featured_image_url": None,
+            "meta_title": "Physics Wallah Case Study | Social IT",
+            "meta_description": "EdTech platform development for Physics Wallah.",
+        },
+        {
+            "slug": "restaurant-brand-website",
+            "title": "Fine Dine - Restaurant Brand & Website",
+            "client_name": "Fine Dine",
+            "excerpt": "Full brand identity and website for a premium restaurant chain.",
+            "challenge": "Stand out in a competitive market with a memorable brand and easy reservations.",
+            "solution": "Logo design, brand guidelines, and a responsive website with online booking.",
+            "results": "Higher table bookings and stronger brand recall.",
+            "industry": "Restaurants and Hotels",
+            "tags": ["Logo Designs", "Websites", "Branding & Advertising"],
+            "status": ContentStatus.PUBLISHED,
+            "featured_image_url": None,
+            "meta_title": "Restaurant Brand Case Study | Social IT",
+            "meta_description": "Restaurant branding and website by Social IT.",
+        },
+        {
+            "slug": "fmcg-packaging-design",
+            "title": "FMCG Brand - Packaging & Digital",
+            "client_name": "FMCG Brand",
+            "excerpt": "Packaging design and eCommerce presence for an FMCG launch.",
+            "challenge": "Create shelf impact and drive online sales.",
+            "solution": "Packaging design, product photography, and an eCommerce storefront.",
+            "results": "Strong retail pickup and growing D2C sales.",
+            "industry": "FMCG",
+            "tags": ["Packaging Design", "eCommerce", "Websites"],
+            "status": ContentStatus.PUBLISHED,
+            "featured_image_url": None,
+            "meta_title": "FMCG Case Study | Social IT",
+            "meta_description": "FMCG packaging and eCommerce by Social IT.",
+        },
+        {
+            "slug": "ecommerce-store-ui",
+            "title": "Fashion Store - eCommerce & UI/UX",
+            "client_name": "Fashion Store",
+            "excerpt": "A modern eCommerce experience with intuitive UI/UX.",
+            "challenge": "Increase conversion and reduce cart abandonment.",
+            "solution": "Redesigned user flows, checkout, and mobile experience.",
+            "results": "Higher conversion rate and lower bounce rate.",
+            "industry": "Lifestyle",
+            "tags": ["eCommerce", "UI/UX Designs", "Websites"],
+            "status": ContentStatus.PUBLISHED,
+            "featured_image_url": None,
+            "meta_title": "eCommerce UI/UX Case Study | Social IT",
+            "meta_description": "eCommerce and UI/UX design by Social IT.",
         },
     ]
 
@@ -317,106 +489,219 @@ def create_blogs(db: Session, user: User):
 
 
 def create_homepage(db: Session, user: User):
-    """Create or update homepage with all sections - impressive modern UI"""
+    """Create or update homepage with all sections. Hero aligned with Socialit.in reference."""
+    # Hero section: block-based, Socialit.in content (headline, paragraph, tagline, CTAs, logo row, banner)
+    hero_section = {
+        "id": "section-hero-1",
+        "type": "hero",
+        "data": {
+            "design": {
+                "layout": "two_column",
+                "left_width": "42%",
+                "background_type": "color",
+                "background_color": "#0f172a",
+                "text_color": "#ffffff",
+                "padding_top": 80,
+                "padding_bottom": 80,
+            },
+            "left_blocks": [
+                {"id": "hero-h", "type": "heading", "content": {"level": "h2", "text": "Weaving Your Brand's Digital Success Story"}},
+                {"id": "hero-p", "type": "paragraph", "content": {"text": "Maintain a winning reputation, engage digitally, and deliver an exceptional customer experience - all from one intuitive platform."}},
+                {"id": "hero-tag", "type": "tagline", "content": {"text": "Web Development Company in Kota"}},
+                {"id": "hero-email", "type": "email_input", "content": {"placeholder": "Enter your email"}},
+                {
+                    "id": "hero-btns",
+                    "type": "button_group",
+                    "content": {
+                        "buttons": [
+                            {"text": "Get A Demo", "link": "/contact", "style": "primary"},
+                            {"text": "Explore Case Study", "link": "/case-studies", "style": "outline"},
+                        ],
+                    },
+                },
+                {
+                    "id": "hero-logos",
+                    "type": "logo_row",
+                    "content": {
+                        "headline": "Trusted & Awarded By Global Leaders",
+                        "logos": [
+                            {"image_url": "https://socialit.in/logo_webp/JCI.png", "link_url": "", "alt": "JCI"},
+                            {"image_url": "https://socialit.in/logo_webp/Indian.png", "link_url": "", "alt": "Indian Achievers"},
+                            {"image_url": "https://socialit.in/logo_webp/Rotary.png", "link_url": "", "alt": "Rotary"},
+                        ],
+                    },
+                },
+            ],
+            "right_blocks": [
+                {"id": "hero-img", "type": "image", "content": {"url": "https://socialit.in/assets/img/homebanner.webp", "alt": "Hero banner", "link": ""}},
+            ],
+            "chat_button_text": "Let's Chat",
+            "chat_button_link": "/contact",
+        },
+    }
+
+    # Shared design defaults for full customization (background, colors, padding)
+    design_dark = {
+        "background_type": "gradient",
+        "gradient_from": "#0d419d",
+        "gradient_to": "#388bfd",
+        "text_color": "#FFFFFF",
+        "padding_top": 48,
+        "padding_bottom": 48,
+    }
+    design_darker = {
+        "background_type": "color",
+        "background_color": "#161b22",
+        "text_color": "#e6edf3",
+        "padding_top": 48,
+        "padding_bottom": 48,
+    }
+
+    # Our Services / What We Do – all 9 services from https://socialit.in/
+    services_grid_section = {
+        "id": "section-services-1",
+        "type": "services-grid",
+        "data": {
+            "title": "Our Services",
+            "subtitle": "What We Do",
+            "services": [
+                {"title": "App Development", "description": "Native and cross-platform mobile apps that users love.", "link": "/services/app-development"},
+                {"title": "Website Development", "description": "Custom web solutions for your business. From landing pages to complex web applications.", "link": "/services/website-development"},
+                {"title": "UI/UX Design", "description": "User-centered design that converts. Beautiful, intuitive interfaces.", "link": "/services/ui-ux-design"},
+                {"title": "Social Media Marketing", "description": "Grow your brand on social platforms. Content that resonates.", "link": "/services/social-media-marketing"},
+                {"title": "Graphic Design", "description": "Visual identity that stands out. Logos to marketing materials.", "link": "/services/graphic-design"},
+                {"title": "Digital Marketing", "description": "Data-driven strategies. SEO, PPC, email marketing, and analytics.", "link": "/services/digital-marketing"},
+                {"title": "Logo Design", "description": "Memorable brand identities. Unique logos that make a lasting impression.", "link": "/services/logo-design"},
+                {"title": "Branding & Advertising", "description": "Complete brand solutions. From strategy to execution.", "link": "/services/branding-advertising"},
+                {"title": "Packaging Design", "description": "Packaging that sells. Eye-catching designs that tell your brand story.", "link": "/services/packaging-design"},
+            ],
+            "columns": 3,
+            "titleColor": "#e6edf3",
+            "subtitleColor": "#8b949e",
+            "linkColor": "#58a6ff",
+            "backgroundColor": "#0d1117",
+            "design": {"background_type": "color", "background_color": "#0d1117", "text_color": "#e6edf3", "padding_top": 48, "padding_bottom": 48},
+        },
+    }
+
+    # Let's get insights from leaders globally – 6 leader quotes from Socialit.in
+    leaders_section = {
+        "id": "section-leaders-1",
+        "type": "testimonials",
+        "data": {
+            "title": "Let's get insights from leaders globally",
+            "subtitle": "Lead today, motivate tomorrow",
+            "items": [
+                {"quote": "At boAt, we are on a mission to bring Technologically superior products for the discerning Indian Consumers. BoAt was born online and our marketing primarily revolves around the same.", "author": "Aman Gupta", "role": "Chief Marketing officer", "company": "BoAt"},
+                {"quote": "I am passionate about education. That's why it was exciting to discuss the future of education and how technology is changing the landscape for both students and teachers.", "author": "alakh pandey", "role": "Chief executive officer", "company": "Physics Wallah"},
+                {"quote": "Technology played an instrumental role in helping us solve the existing market problem. Our best-in-class tech stack helps drive efficiency in operations, ultimately making 10-minute deliveries possible.", "author": "Aadit Palidha", "role": "Chief executive officer", "company": "Zepto"},
+                {"quote": "In our fast-paced digital age, coding isn't reserved for techies alone. It's the global language of innovation, and it's time to embrace it.", "author": "Amit Jain", "role": "Chief executive officer", "company": "CarDekho"},
+                {"quote": "Social Media is turning the media landscape on its head, and to see a company led by a very passionate team helping brands navigate these waters is very exciting.", "author": "Anupam Mittal", "role": "Founder", "company": "Shaadi.com"},
+                {"quote": "Digital isn't only changing and reshaping our daily lives—it's driving the economy.", "author": "Shantanu Narayen", "role": "Chief executive officer", "company": "Adobe Systems"},
+            ],
+            "design": design_darker,
+        },
+    }
+
+    # Everything you need to run a digital business – 10 features from Socialit.in
+    features_section = {
+        "id": "section-features-1",
+        "type": "features",
+        "data": {
+            "title": "Everything you need to run a digital business",
+            "subtext": "From reputation and listings to payments and AI-driven insights—all in one place.",
+            "items": [
+                "Reviews – Improve online reputation",
+                "Listings – Get found online",
+                "Messaging – Engage on digital channels",
+                "Webchat – Engage website visitors",
+                "Social – Post, engage, and report",
+                "Appointments – Book and confirm digitally",
+                "Payments – Get paid faster",
+                "Surveys – Improve experience",
+                "Referrals – Grow sales with referrals",
+                "Insights – Actionable insights with AI",
+            ],
+            "design": {"background_type": "color", "background_color": "#f8fafc", "text_color": "#1e293b", "padding_top": 48, "padding_bottom": 48},
+        },
+    }
+
+    # Stats: Clients, Projects, Creative Designs, Experience (from Socialit.in)
+    stats_section = {
+        "id": "section-stats-1",
+        "type": "stats",
+        "data": {
+            "title": "Better Performance on the platforms That Matter",
+            "subtext": "Trusted by brands across industries.",
+            "items": [
+                {"label": "Clients", "value": "150+"},
+                {"label": "Projects", "value": "500+"},
+                {"label": "Creative Designs", "value": "2000+"},
+                {"label": "Years Experience", "value": "10+"},
+            ],
+            "design": design_dark,
+        },
+    }
+
+    # What Our Client Says / We Work Across / All Industries – 5 client testimonials
+    testimonials_section = {
+        "id": "section-testimonials-1",
+        "type": "testimonials",
+        "data": {
+            "title": "What Our Client Says",
+            "subtitle": "We Work Across All Industries",
+            "items": [
+                {"quote": "Mr Vaibhav is very good at his profession and also very generous person. He is ready for any help anytime. The work quality is also very good. I recommend to get associated with him.", "author": "Dr. Palkesh Agarwal", "role": "Sudha Hospital", "company": ""},
+                {"quote": "Thanks to the Social IT team for their hard work, creativity, and dedication to bringing my vision to life. Your graphic designing services have played a significant role in elevating my brand's visual presence and engaging my target audience effectively.", "author": "Vijay Gupta", "role": "Sahara Group", "company": ""},
+                {"quote": "I am thrilled to provide my highest recommendation for the Social IT Marketing and Development Agency! They have created an exceptional mobile app for me that is not only visually stunning, but also incredibly responsive and user-friendly.", "author": "Dorian Priest Mascarenhas", "role": "RCTI Diagnostic", "company": ""},
+                {"quote": "You tell them what you want, you tell them about your expectations and target audience and they prepare the entire marketing campaign for you. The entire process became very seamless for me including creatives and Social Media Marketing.", "author": "Avijit Goel", "role": "Gondilal Kiva Jewellers", "company": ""},
+                {"quote": "Recently we got connected with social it and I must say they have very good services, if you want to promote your business go with Social It. Richard, you have done a great job", "author": "Rashmi", "role": "Event Manager", "company": ""},
+            ],
+            "design": design_darker,
+        },
+    }
+
+    # Social It integrates with the apps you use
+    integrations_section = {
+        "id": "section-integrations-1",
+        "type": "text",
+        "data": {
+            "title": "Social It integrates with the apps you use",
+            "content": "Connect with the tools and platforms your business already uses. From CRM to analytics, we help you stay integrated and efficient.",
+            "design": {"background_type": "color", "background_color": "#ffffff", "text_color": "#1e293b", "padding_top": 48, "padding_bottom": 48},
+        },
+    }
+
+    cta_section = {
+        "id": "section-cta-1",
+        "type": "cta",
+        "data": {
+            "heading": "Ready to Transform Your Digital Presence?",
+            "subtext": "Let's create something amazing together.",
+            "buttonText": "Get In Touch",
+            "buttonLink": "/contact",
+            "secondaryText": "Let's Chat",
+            "secondaryLink": "/contact",
+            "design": {
+                "background_type": "gradient",
+                "gradient_from": "#1f6feb",
+                "gradient_to": "#388bfd",
+                "text_color": "#FFFFFF",
+                "padding_top": 48,
+                "padding_bottom": 48,
+            },
+        },
+    }
+
     homepage_content = [
-        {
-            "type": "hero",
-            "data": {
-                "heading": "Weaving Your Brand's Digital Success Story",
-                "subheading": "Maintain a winning reputation, engage digitally, and deliver an exceptional customer experience — all from one intuitive platform.",
-                "cta_text": "Get Started",
-                "cta_link": "/contact",
-                "secondary_cta_text": "Explore Our Work",
-                "secondary_cta_link": "/case-studies",
-                "background_image": None,
-                "useGradient": True,
-                "gradientFrom": "#0d419d",
-                "gradientTo": "#388bfd",
-                "gradientDirection": "135deg",
-                "textColor": "#FFFFFF",
-            }
-        },
-        {
-            "type": "services-grid",
-            "data": {
-                "title": "Our Services",
-                "subtitle": "End-to-end digital solutions that drive growth and engagement",
-                "services": [],
-                "columns": 3,
-                "titleColor": "#e6edf3",
-                "subtitleColor": "#8b949e",
-                "cardUseGradient": True,
-                "cardGradientFrom": "#161b22",
-                "cardGradientTo": "#0d1117",
-                "cardBorderColor": "#30363d",
-                "hoverOverlayColor": "#58a6ff",
-                "linkColor": "#58a6ff",
-                "cardShadowColor": "#58a6ff",
-                "shadowOpacity": 0.2,
-                "backgroundColor": "#0d1117",
-            }
-        },
-        {
-            "type": "stats",
-            "data": {
-                "title": "Our Achievements",
-                "stats": [
-                    {"label": "Happy Clients", "value": "500+", "icon": ""},
-                    {"label": "Projects Delivered", "value": "1000+", "icon": ""},
-                    {"label": "Creative Designs", "value": "2000+", "icon": ""},
-                    {"label": "Years of Excellence", "value": "10+", "icon": ""},
-                ],
-                "useGradient": True,
-                "gradientFrom": "#0d419d",
-                "gradientTo": "#388bfd",
-                "gradientDirection": "135deg",
-                "textColor": "#FFFFFF",
-            }
-        },
-        {
-            "type": "testimonials",
-            "data": {
-                "title": "What Our Clients Say",
-                "subtitle": "Trusted by brands across industries",
-                "testimonials": [
-                    {
-                        "name": "Dr. Palkesh Agarwal",
-                        "role": "Sudha Hospital",
-                        "text": "Mr Vaibhav is very good at his profession and also very generous person. He is ready for any help anytime. The work quality is also very good. I recommend to get associated with him.",
-                        "avatar": None,
-                    },
-                    {
-                        "name": "Vijay Gupta",
-                        "role": "Sahara Group",
-                        "text": "Thanks to the Social IT team for their hard work, creativity, and dedication to bringing my vision to life. Your graphic designing services have played a significant role in elevating my brand's visual presence.",
-                        "avatar": None,
-                    },
-                    {
-                        "name": "Dorian Priest Mascarenhas",
-                        "role": "RCTI Diagnostic",
-                        "text": "I am thrilled to provide my highest recommendation for the Social IT Marketing and Development Agency! They have created an exceptional mobile app for me that is not only visually stunning, but also incredibly responsive and user-friendly.",
-                        "avatar": None,
-                    },
-                ],
-                "backgroundColor": "#161b22",
-                "textColor": "#e6edf3",
-            }
-        },
-        {
-            "type": "cta",
-            "data": {
-                "title": "Ready to Transform Your Digital Presence?",
-                "subtitle": "Let's create something amazing together.",
-                "cta_text": "Get In Touch",
-                "cta_link": "/contact",
-                "icon": "",
-                "useGradient": True,
-                "gradientFrom": "#1f6feb",
-                "gradientTo": "#388bfd",
-                "gradientDirection": "to right",
-                "textColor": "#FFFFFF",
-            }
-        },
+        hero_section,
+        services_grid_section,
+        leaders_section,
+        features_section,
+        stats_section,
+        testimonials_section,
+        integrations_section,
+        cta_section,
     ]
 
     print("\nCreating/updating homepage...")
@@ -458,51 +743,68 @@ def create_homepage(db: Session, user: User):
 
 
 def create_about_page(db: Session, user: User):
-    """Create or update the About page with hero, values, and CTA sections."""
+    """Create or update the About page with hero, text, features (values), stats, and CTA (all renderable by SectionRenderer)."""
+    design_dark = {"background_type": "gradient", "gradient_from": "#0d419d", "gradient_to": "#388bfd", "text_color": "#FFFFFF", "padding_top": 48, "padding_bottom": 48}
+    design_darker = {"background_type": "color", "background_color": "#161b22", "text_color": "#e6edf3", "padding_top": 48, "padding_bottom": 48}
     about_content = [
         {
             "id": "about-hero-1",
-            "type": "about-hero",
+            "type": "hero",
             "data": {
                 "heading": "We're Building the Future of Digital",
                 "subheading": "A passionate team dedicated to innovation, partnership, and delivering exceptional results for our clients.",
-                "icon": "",
-                "useGradient": True,
-                "gradientFrom": "#0d419d",
-                "gradientTo": "#388bfd",
-                "gradientDirection": "135deg",
-                "textColor": "#FFFFFF",
+                "buttonText": "Get In Touch",
+                "buttonLink": "/contact",
+            },
+        },
+        {
+            "id": "about-intro-1",
+            "type": "text",
+            "data": {
+                "title": "About Us",
+                "content": "With a deep understanding of the digital landscape, we are dedicated to helping businesses thrive and achieve their goals. Social IT is an AI-driven digital marketing and software development company, weaving your brand's digital success story. We deliver website development, app development, digital marketing, and design services that help brands maintain a winning reputation, engage digitally, and deliver an exceptional customer experience.",
+                "design": {"background_type": "color", "background_color": "#ffffff", "text_color": "#1e293b", "padding_top": 48, "padding_bottom": 48},
             },
         },
         {
             "id": "about-values-1",
-            "type": "values-grid",
+            "type": "features",
             "data": {
                 "title": "Our Core Values",
-                "backgroundColor": "#161b22",
-                "textColor": "#e6edf3",
-                "values": [
-                    {"icon": "", "title": "Innovation", "description": "We embrace cutting-edge solutions and stay ahead of technology trends to deliver future-ready products."},
-                    {"icon": "", "title": "Partnership", "description": "We build lasting relationships with our clients, working as an extension of your team to achieve shared goals."},
-                    {"icon": "", "title": "Excellence", "description": "Quality in everything we do—from strategy and design to development and support."},
-                    {"icon": "", "title": "Results", "description": "We focus on measurable outcomes that drive growth, engagement, and ROI for your business."},
+                "subtext": "What drives us every day.",
+                "items": [
+                    "Innovation – We embrace cutting-edge solutions and stay ahead of technology trends to deliver future-ready products.",
+                    "Partnership – We build lasting relationships with our clients, working as an extension of your team to achieve shared goals.",
+                    "Excellence – Quality in everything we do, from strategy and design to development and support.",
+                    "Results – We focus on measurable outcomes that drive growth, engagement, and ROI for your business.",
                 ],
+                "design": design_darker,
+            },
+        },
+        {
+            "id": "about-stats-1",
+            "type": "stats",
+            "data": {
+                "title": "Better Performance on the Platforms That Matter",
+                "subtext": "Numbers that speak for themselves.",
+                "items": [
+                    {"label": "Clients", "value": "150+"},
+                    {"label": "Projects", "value": "500+"},
+                    {"label": "Creative Designs", "value": "2000+"},
+                    {"label": "Years Experience", "value": "10+"},
+                ],
+                "design": design_dark,
             },
         },
         {
             "id": "about-cta-1",
             "type": "cta",
             "data": {
-                "title": "Let's Build Something Great Together",
-                "subtitle": "Get in touch to discuss your next project.",
-                "cta_text": "Contact Us",
-                "cta_link": "/contact",
-                "icon": "",
-                "useGradient": True,
-                "gradientFrom": "#1f6feb",
-                "gradientTo": "#388bfd",
-                "gradientDirection": "to right",
-                "textColor": "#FFFFFF",
+                "heading": "Let's Build Something Great Together",
+                "subtext": "Get in touch to discuss your next project.",
+                "buttonText": "Contact Us",
+                "buttonLink": "/contact",
+                "design": design_dark,
             },
         },
     ]
@@ -544,53 +846,40 @@ def create_about_page(db: Session, user: User):
 
 
 def create_contact_page(db: Session, user: User):
-    """Create or update Contact page – same look as homepage (hero + contact-form + cta)."""
+    """Create or update Contact page – hero, text (details + form message), cta (all renderable by SectionRenderer)."""
+    design_dark = {"background_type": "gradient", "gradient_from": "#0d419d", "gradient_to": "#388bfd", "text_color": "#FFFFFF", "padding_top": 48, "padding_bottom": 48}
+    design_darker = {"background_type": "color", "background_color": "#161b22", "text_color": "#e6edf3", "padding_top": 48, "padding_bottom": 48}
     contact_content = [
         {
             "id": "contact-hero-1",
             "type": "hero",
             "data": {
                 "heading": "Get In Touch",
-                "subheading": "Have a project in mind? We'd love to hear from you. Reach out and let's create something great together.",
-                "cta_text": "Send a Message",
-                "cta_link": "#contact-form",
-                "secondary_cta_text": None,
-                "secondary_cta_link": None,
-                "background_image": None,
-                "useGradient": True,
-                "gradientFrom": "#0d419d",
-                "gradientTo": "#388bfd",
-                "gradientDirection": "135deg",
-                "textColor": "#FFFFFF",
+                "subheading": "Have a project in mind? We'd love to hear from you. Share the details of your project and we'll get back to you as soon as we can.",
+                "buttonText": "Send a Message",
+                "buttonLink": "/contact",
             },
         },
         {
-            "id": "contact-form-1",
-            "type": "contact-form",
+            "id": "contact-details-1",
+            "type": "text",
             "data": {
-                "title": "Send Us a Message",
-                "subtitle": "Fill out the form below and we'll get back to you within 24 hours.",
-                "fields": ["name", "email", "phone", "message"],
-                "buttonText": "Send Message",
-                "successMessage": "Thank you! We'll be in touch soon.",
-                "backgroundColor": "#161b22",
-                "textColor": "#e6edf3",
+                "title": "Contact Us",
+                "content": "Got a project in mind? Share the details of your project.\n\nAddress: H-14(B), Electronic Complex, Road No.1, IPIA, Kota, Rajasthan 324009. We also have an office at 1751 2nd Ave, New York City, NY, 10128.\n\nPhone: +91-8824467277, +91-8290534979, +91-7737306090.\n\nEmail: info@socialit.in\n\nUse the form on this page to send us a message, or reach out via WhatsApp—we're here to help.",
+                "design": design_darker,
             },
         },
         {
             "id": "contact-cta-1",
             "type": "cta",
             "data": {
-                "title": "Prefer to Talk?",
-                "subtitle": "Call us or drop an email – we're here to help.",
-                "cta_text": "View Our Work",
-                "cta_link": "/case-studies",
-                "icon": "",
-                "useGradient": True,
-                "gradientFrom": "#1f6feb",
-                "gradientTo": "#388bfd",
-                "gradientDirection": "to right",
-                "textColor": "#FFFFFF",
+                "heading": "Prefer to Talk?",
+                "subtext": "Call us or drop an email – we're here to help.",
+                "buttonText": "View Our Work",
+                "buttonLink": "/case-studies",
+                "secondaryText": "Let's Chat",
+                "secondaryLink": "/contact",
+                "design": design_dark,
             },
         },
     ]
@@ -617,7 +906,9 @@ def create_contact_page(db: Session, user: User):
 
 
 def create_careers_page(db: Session, user: User):
-    """Create or update Careers page – same look as homepage (hero + careers-list + cta)."""
+    """Create or update Careers page – hero, text, features (roles), cta (all renderable by SectionRenderer)."""
+    design_dark = {"background_type": "gradient", "gradient_from": "#0d419d", "gradient_to": "#388bfd", "text_color": "#FFFFFF", "padding_top": 48, "padding_bottom": 48}
+    design_darker = {"background_type": "color", "background_color": "#161b22", "text_color": "#e6edf3", "padding_top": 48, "padding_bottom": 48}
     careers_content = [
         {
             "id": "careers-hero-1",
@@ -625,74 +916,44 @@ def create_careers_page(db: Session, user: User):
             "data": {
                 "heading": "Join Our Team",
                 "subheading": "We're always looking for talented people. Explore open roles and grow with us.",
-                "cta_text": "See Open Roles",
-                "cta_link": "#open-positions",
-                "secondary_cta_text": None,
-                "secondary_cta_link": None,
-                "background_image": None,
-                "useGradient": True,
-                "gradientFrom": "#0d419d",
-                "gradientTo": "#388bfd",
-                "gradientDirection": "135deg",
-                "textColor": "#FFFFFF",
+                "buttonText": "See Open Roles",
+                "buttonLink": "#open-positions",
+            },
+        },
+        {
+            "id": "careers-intro-1",
+            "type": "text",
+            "data": {
+                "title": "Open Positions",
+                "content": "Find your next opportunity with Social IT. We're a digital marketing and software development company based in Kota with a presence in New York. We offer a collaborative, growth-oriented environment where you can build products that matter.",
+                "design": {"background_type": "color", "background_color": "#f8fafc", "text_color": "#1e293b", "padding_top": 48, "padding_bottom": 48},
             },
         },
         {
             "id": "careers-list-1",
-            "type": "careers-list",
+            "type": "features",
             "data": {
-                "title": "Open Positions",
-                "subtitle": "Find your next opportunity with Social IT.",
-                "backgroundColor": "#161b22",
-                "textColor": "#e6edf3",
-                "jobs": [
-                    {
-                        "icon": "",
-                        "title": "Senior Full Stack Developer",
-                        "type": "Full-time",
-                        "description": "Build scalable web and mobile applications using modern stacks. You'll work on client projects and internal products.",
-                        "location": "Remote / Hybrid",
-                        "salary": "Competitive",
-                        "experience": "5+ years",
-                        "applyLink": "mailto:careers@socialit.in?subject=Application: Senior Full Stack Developer",
-                    },
-                    {
-                        "icon": "",
-                        "title": "UI/UX Designer",
-                        "type": "Full-time",
-                        "description": "Create beautiful, user-centered interfaces for websites and apps. Strong portfolio and Figma skills required.",
-                        "location": "Remote / Hybrid",
-                        "salary": "Competitive",
-                        "experience": "3+ years",
-                        "applyLink": "mailto:careers@socialit.in?subject=Application: UI/UX Designer",
-                    },
-                    {
-                        "icon": "",
-                        "title": "Digital Marketing Specialist",
-                        "type": "Full-time",
-                        "description": "Drive growth through SEO, social media, and content marketing. Experience with analytics and campaigns preferred.",
-                        "location": "Remote / Hybrid",
-                        "salary": "Competitive",
-                        "experience": "2+ years",
-                        "applyLink": "mailto:careers@socialit.in?subject=Application: Digital Marketing Specialist",
-                    },
+                "title": "Current Openings",
+                "subtext": "Full-time and internship roles. Remote / Hybrid options available.",
+                "items": [
+                    "Senior Full Stack Developer – Build scalable web and mobile applications. 5+ years experience. Remote / Hybrid. Apply: careers@socialit.in",
+                    "UI/UX Designer – Create beautiful, user-centered interfaces. Strong portfolio and Figma skills. 3+ years. Remote / Hybrid.",
+                    "Digital Marketing Specialist – Drive growth through SEO, social media, and content. 2+ years. Remote / Hybrid.",
+                    "Graphic Designer – Visual identity, branding, and marketing materials. Strong creative portfolio.",
+                    "Business Development Executive – Help us grow our client base and partnerships. Excellent communication skills.",
                 ],
+                "design": design_darker,
             },
         },
         {
             "id": "careers-cta-1",
             "type": "cta",
             "data": {
-                "title": "Don't See the Right Role?",
-                "subtitle": "We're still growing. Send us your resume and we'll keep you in mind.",
-                "cta_text": "Get In Touch",
-                "cta_link": "/contact",
-                "icon": "",
-                "useGradient": True,
-                "gradientFrom": "#1f6feb",
-                "gradientTo": "#388bfd",
-                "gradientDirection": "to right",
-                "textColor": "#FFFFFF",
+                "heading": "Don't See the Right Role?",
+                "subtext": "We're still growing. Send us your resume and we'll keep you in mind for future openings.",
+                "buttonText": "Get In Touch",
+                "buttonLink": "/contact",
+                "design": design_dark,
             },
         },
     ]
@@ -806,7 +1067,7 @@ def update_header_footer(db: Session, user: User):
             {
                 "id": "1",
                 "title": "Social IT",
-                "content": "With a deep understanding of the digital landscape, we are dedicated to helping businesses thrive and achieve their goals",
+                "content": "With a deep understanding of the digital landscape, we are dedicated to helping businesses thrive and achieve their goals.",
                 "links": [],
             },
             {
@@ -849,6 +1110,13 @@ def update_header_footer(db: Session, user: User):
             },
         ],
         "copyright_text": "Copyright © {year} Social IT. All rights reserved.",
+        "newsletter_title": "Subscribe to Our Newsletter for the Latest Updates",
+        "newsletter_placeholder": "Your email",
+        "newsletter_button_text": "Send",
+        "legal_links": [
+            {"id": "1", "label": "Terms of Use", "href": "/terms", "open_in_new_tab": False},
+            {"id": "2", "label": "Privacy Policy", "href": "/privacy", "open_in_new_tab": False},
+        ],
         "styling": {
             "background_color": "#0d1117",
             "text_color": "#e6edf3",
@@ -868,6 +1136,79 @@ def update_header_footer(db: Session, user: User):
         print(f"[ERROR] Error updating header/footer: {e}")
 
 
+def update_about_page_site_setting(db: Session, user: User):
+    """Fill About page site setting (used by /about) with full content."""
+    about_config = {
+        "heading": "About Us",
+        "intro": "With a deep understanding of the digital landscape, we are dedicated to helping businesses thrive and achieve their goals. Social IT is an AI-driven digital marketing and software development company, weaving your brand's digital success story.",
+        "stats_heading": "Better Performance on the platforms That Matter",
+        "stats_subtext": "Numbers that speak for themselves.",
+        "stats": [
+            {"value": "150+", "label": "Clients"},
+            {"value": "500+", "label": "Projects"},
+            {"value": "2000+", "label": "Creative Designs"},
+            {"value": "10+", "label": "Years Experience"},
+        ],
+        "journey_heading": "Our Journey",
+        "journey_subheading": "Discover Our Story",
+        "journey_text": "Social IT was born with a mission to bring technologically superior digital solutions to businesses. We have evolved our expertise in website development, app development, digital marketing, and design—helping brands navigate the rapidly changing online landscape and deliver exceptional customer experiences.",
+        "vision_heading": "Our Vision",
+        "vision_subheading": "Driving Innovation & Growth",
+        "vision_text": "We aspire to be a global leader in high-quality marketing and IT solutions, serving brands with mission-critical applications. Our vision is to close the technology and business success gap, bringing brands closer to their customers and helping them scale.",
+        "what_sets_apart_heading": "What Sets Us Apart",
+        "what_sets_apart_subheading": "Passionate About Results",
+        "what_sets_apart_items": [
+            {"title": "Innovation", "text": "We embrace cutting-edge solutions and stay ahead of technology trends to deliver future-ready products."},
+            {"title": "Partnership", "text": "We build lasting relationships with our clients, working as an extension of your team to achieve shared goals."},
+            {"title": "Excellence", "text": "Quality in everything we do—from strategy and design to development and support."},
+            {"title": "Results", "text": "We focus on measurable outcomes that drive growth, engagement, and ROI for your business."},
+        ],
+        "team_heading": "Meet Our Team",
+        "team_subheading": "The Minds Behind Social IT",
+        "team": [
+            {"name": "Shubhra Mitra", "role": "Content & Strategy Lead", "image_url": ""},
+            {"name": "Kanak Pandey", "role": "Co-Founder / Key Team Member", "image_url": ""},
+            {"name": "Himanshu Porwal", "role": "Senior UI/UX Developer", "image_url": ""},
+            {"name": "Dushyant Singh", "role": "Graphic Designer", "image_url": ""},
+            {"name": "Ryan Rehan", "role": "Business Development Executive", "image_url": ""},
+        ],
+        "cta_text": "Get In Touch",
+        "cta_link": "/contact",
+    }
+    try:
+        save_about_page(db, about_config)
+        print("[OK] Updated About page site setting")
+    except Exception as e:
+        print(f"[ERROR] Error updating About page site setting: {e}")
+
+
+def update_contact_info_site_setting(db: Session, user: User):
+    """Fill Contact info site setting (used by /contact) with Socialit.in details."""
+    contact_config = {
+        "heading": "Contact Us",
+        "subtext": "Got a project in mind? Share the details of your project. We'll respond as soon as we can.",
+        "email": "info@socialit.in",
+        "addresses": [
+            "H-14(B), Electronic Complex, Road No.1, IPIA, Kota, Rajasthan 324009",
+            "1751 2nd Ave, New York City, NY, 10128",
+        ],
+        "phones": [
+            "+91-8824467277",
+            "+91-8290534979",
+            "+91-7737306090",
+        ],
+        "whatsapp_number": "+918824467277",
+        "whatsapp_text": "Let's Chat",
+        "show_contact_form": True,
+        "form_heading": "Got a project in mind? Share the details of your project.",
+    }
+    try:
+        save_contact_info(db, contact_config)
+        print("[OK] Updated Contact info site setting")
+    except Exception as e:
+        print(f"[ERROR] Error updating Contact info site setting: {e}")
+
+
 def main():
     """Main function to populate all data"""
     db: Session = SessionLocal()
@@ -881,6 +1222,7 @@ def main():
 
         # Create all content
         create_services(db, user)
+        update_app_development_service_content(db, user)
         create_case_studies(db, user)
         create_blogs(db, user)
         create_homepage(db, user)
@@ -889,6 +1231,8 @@ def main():
         create_careers_page(db, user)
         update_theme_config(db, user)
         update_header_footer(db, user)
+        update_about_page_site_setting(db, user)
+        update_contact_info_site_setting(db, user)
 
         print("\n" + "=" * 60)
         print("[SUCCESS] Data population completed successfully!")

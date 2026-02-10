@@ -84,12 +84,26 @@ def list_case_studies(
     db: Session,
     skip: int = 0,
     limit: int = 100,
-    status: Optional[ContentStatus] = None
+    status: Optional[ContentStatus] = None,
+    industry: Optional[str] = None,
+    category: Optional[str] = None,
 ) -> List[CaseStudy]:
     query = select(CaseStudy).where(CaseStudy.is_deleted == False)
     
     if status:
         query = query.where(CaseStudy.status == status)
+    
+    if industry:
+        query = query.where(CaseStudy.industry == industry)
+    elif category and category.lower() != "all":
+        from sqlalchemy import or_
+        cat = category.strip()
+        query = query.where(
+            or_(
+                CaseStudy.industry == cat,
+                CaseStudy.tags.contains([cat]),
+            )
+        )
     
     query = query.offset(skip).limit(limit).order_by(CaseStudy.created_at.desc())
     

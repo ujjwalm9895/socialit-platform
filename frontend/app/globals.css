@@ -78,6 +78,9 @@ body {
   .link-underline:hover::after {
     width: 100%;
   }
+  .hero-email-input::placeholder {
+    color: var(--hero-placeholder, rgba(255, 255, 255, 0.5));
+  }
 }
 
 @keyframes fadeInUp {
