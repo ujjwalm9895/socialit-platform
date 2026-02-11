@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { FooterConfig } from "./SiteSettingsProvider";
+import type { FooterConfig, FooterColumn } from "./SiteSettingsProvider";
 
 const DEFAULT_LINKS = [
   { label: "Services", href: "/services" },
@@ -16,7 +16,7 @@ export default function Footer({ config }: { config?: FooterConfig | null }) {
   const bg = styling.background_color ?? "#f3f4f6";
   const textColor = styling.text_color ?? "#6b7280";
   const linkColor = styling.link_color ?? "#6366f1";
-  const columns = config?.columns?.length ? config.columns : [{ title: "Links", links: DEFAULT_LINKS }];
+  const columns: FooterColumn[] = config?.columns?.length ? config.columns : [{ title: "Links", links: DEFAULT_LINKS }];
   const newsletterTitle = config?.newsletter_title;
   const legalLinks = config?.legal_links ?? [];
 
@@ -25,7 +25,7 @@ export default function Footer({ config }: { config?: FooterConfig | null }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {columns.map((col, i) => (
-            <div key={"id" in col && col.id ? col.id : i}>
+            <div key={col.id ?? i}>
               {col.title && <p className="text-sm font-semibold mb-2" style={{ color: textColor }}>{col.title}</p>}
               {col.content && <p className="text-sm opacity-90 mb-3 max-w-xs">{col.content}</p>}
               <div className="flex flex-col gap-1">
