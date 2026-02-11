@@ -87,7 +87,7 @@ function HeroBlock({ data }: { data: Record<string, unknown> }) {
       style={bgStyle}
     >
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(255,255,255,0.12),transparent)]" aria-hidden />
-      <div className={`relative ${sectionPadding} min-h-[50vh] sm:min-h-[55vh] md:min-h-[60vh] flex flex-col justify-center`} style={{ color: textColor }}>
+      <div className="relative py-12 sm:py-16 md:py-20 min-h-[50vh] sm:min-h-[55vh] md:min-h-[60vh] flex flex-col justify-center" style={{ color: textColor }}>
         <div className={containerClass + " text-center"}>
           {badge && (
             <span className="inline-block text-primary-dark bg-white/95 text-xs sm:text-sm font-semibold uppercase tracking-wider px-3 py-1.5 sm:px-4 rounded-full mb-4 sm:mb-6 animate-fade-in-up" style={{ animationDelay: "0s" }}>
